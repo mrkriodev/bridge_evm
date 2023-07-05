@@ -1,7 +1,20 @@
+from solcx import install_solc, compile_source
+
+# install_solc(version='latest')
+solc_version = '0.8.17'
+install_solc(solc_version)
+
+compiled_msw_issue_mint_v3 = compile_source(
+    '''
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-contract MultiSigWallet {
+interface WETHSIface{
+  function mintAndTransfer(address recipient, uint amount) external;
+}
+
+
+contract MSIssuer {
     event Deposit(address indexed sender, uint amount, uint balance);
     event SubmitTransaction(
         address indexed owner,
@@ -43,6 +56,8 @@ contract MultiSigWallet {
         bool provided;
         uint numSigns;
     }
+
+    address public constant WETHSTokenAddress = address(0x2589330Abe857B4aAc657a73756313606381AaF5);
 
     // mapping from tx index => owner => bool
     mapping(uint => mapping(address => bool)) public isConfirmed;
@@ -89,18 +104,18 @@ contract MultiSigWallet {
         _;
     }
 
-    constructor(address[] memory _owners, uint _numConfirmationsRequired, uint _numSignsRequired) {
+    constructor(address[] memory _owners, uint _numConfirmationsRequired/*, uint _numSignsRequired*/) {
         require(_owners.length > 0, "owners required");
         require(
             _numConfirmationsRequired > 0 &&
                 _numConfirmationsRequired <= _owners.length,
             "invalid number of required confirmations"
         );
-        require(
+        /*require(
             _numSignsRequired > 0 &&
                 _numSignsRequired <= _owners.length,
             "invalid number of required signs"
-        );
+        );*/
 
         for (uint i = 0; i < _owners.length; i++) {
             address owner = _owners[i];
@@ -113,7 +128,8 @@ contract MultiSigWallet {
         }
 
         numConfirmationsRequired = _numConfirmationsRequired;
-        numSignsRequired = _numSignsRequired;
+        //numSignsRequired = _numSignsRequired;
+        numSignsRequired = _numConfirmationsRequired;
     }
 
     receive() external payable {
@@ -139,7 +155,7 @@ contract MultiSigWallet {
 
         emit SubmitTransaction(msg.sender, txIndex, _to, _value, _data);
     }
-
+    
     function initIssue( address _to, uint _value) public onlyOwner {
         uint issueIndex = issues.length;
         issues.push(
@@ -164,7 +180,7 @@ contract MultiSigWallet {
         emit ConfirmTransaction(msg.sender, _txIndex);
     }
 
-    function signIssue(uint _issueIndex) public onlyOwner
+    function signIssue(uint _issueIndex) public onlyOwner 
     issueExists(_issueIndex) notProvided(_issueIndex) notSigned(_issueIndex) {
         Issue storage issue = issues[_issueIndex];
         issue.numSigns += 1;
@@ -196,13 +212,16 @@ contract MultiSigWallet {
     function provideIssue(uint _issueIndex) public onlyOwner issueExists(_issueIndex) notProvided(_issueIndex) {
         Issue storage issue = issues[_issueIndex];
         require(issue.numSigns >= numSignsRequired, "cannot privede issue");
-        issue.provided = true;
-        (bool success, ) = issue.to.call{value: issue.value}(
-            ""//transaction.data
-        );
-        require(success, "issue failed");
+        
+        callMintWETHS(issue.to, issue.value);
 
+        issue.provided = true;
         emit IssueProvided(msg.sender, _issueIndex);
+    }
+
+    function callMintWETHS(address _to, uint _value) internal {
+        WETHSIface WETHSTokenContract = WETHSIface(WETHSTokenAddress);
+        WETHSTokenContract.mintAndTransfer(_to, _value);
     }
 
     function revokeConfirmation(
@@ -269,3 +288,6 @@ contract MultiSigWallet {
         );
     }
 }
+    ''',
+    output_values=['abi', 'bin']
+)
