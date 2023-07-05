@@ -8,6 +8,7 @@ from compiled_contracts.goerli_wsibr_v4_minted_compiled import compiled_wsibr_v4
 
 
 logging.basicConfig(level=logging.DEBUG)
+IS_INFURA = True
 infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
 #infura_url = 'https://rpc.test.siberium.net'
 first_adr = '0xade657554299E886Fb0150d4293D441f278A9854'
@@ -36,7 +37,10 @@ def standard_trx_build_for_sc_call_with_gas(base_adr=None) -> dict:
         'gasPrice': web3.eth.gas_price,
         'nonce': web3.eth.get_transaction_count(base_adr)
     }
-    gas = web3.eth.estimate_gas(build_trx_config) + 100000
+    gas_eddition = 0
+    if not IS_INFURA:
+        gas_eddition = 100000
+    gas = web3.eth.estimate_gas(build_trx_config) + gas_eddition
     build_trx_config['gas'] = gas + int(gas * 0.2)
 
     return build_trx_config
@@ -334,11 +338,15 @@ def make_transaction(to_adr=second_adr):
         'from': web3.to_checksum_address(first_adr),
         'to': web3.to_checksum_address(to_adr),
         'nonce': web3.eth.get_transaction_count(first_adr),
-        'value': web3.to_wei(0.001, 'ether'),
+        'value': web3.to_wei(0.00013, 'ether'),
         'gasPrice': web3.eth.gas_price,
     }
 
-    gas = web3.eth.estimate_gas(tx_dict) + 500000
+    gas_eddition = 0
+    if not IS_INFURA:
+        gas_eddition = 100000
+
+    gas = web3.eth.estimate_gas(tx_dict) + gas_eddition
     tx_dict['gas'] = gas + int(gas*0.2)
 
     signed_tx = web3.eth.account.sign_transaction(tx_dict, first_adr_pk)
@@ -371,8 +379,8 @@ sibr_msw_issue_mint_v3_adr = '0x8CeD35824051b187d4fFDE9c2492CB113E2C120A'
 
 if __name__ == '__main__':
     test()
-    #make_transaction(first_adr)
-    c_sc = compiled_wsibr_v4_minted
+    make_transaction(third_adr)
+    #c_sc = compiled_wsibr_v4_minted
     #c_sc = compiled_wsibr_v4_minted
     #c_sc = compiled_msw_issue_mint_v3
     #contract_id, contract_interface = c_sc.popitem()
@@ -398,4 +406,4 @@ if __name__ == '__main__':
     #call_func_sc_confirm_trx(second_adr)
     #call_function_from_sc_exec_transaction()
     #call_function_from_sc()
-    load_contract(c_sc)
+    #load_contract(c_sc)
