@@ -4,7 +4,7 @@ from solcx import install_solc, compile_source
 solc_version = '0.8.17'
 install_solc(solc_version)
 
-compiled_wsibr_v4_minted = compile_source(
+compiled_goerli_wsibr_v8 = compile_source(
     '''
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
@@ -66,14 +66,14 @@ contract Ownable
     }
 }
 
-contract WSIBRTokenV7 is IERC20, Ownable {
+contract WSIBRTokenV8 is IERC20, Ownable {
     //mapping(address => uint) balances;
     
     uint public totalSupply = 0;
     mapping(address => uint) public balanceOf;
     mapping(address => mapping(address => uint)) public allowance;
-    string public name = "WSIBR v7";
-    string public symbol = "WSIBRV7";
+    string public name = "WSIBR v8";
+    string public symbol = "WSIBRV8";
     uint8 public decimals = 18;
 
     event Minted(address indexed recepient, uint value);

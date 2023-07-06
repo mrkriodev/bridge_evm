@@ -4,7 +4,7 @@ from solcx import install_solc, compile_source
 solc_version = '0.8.17'
 install_solc(solc_version)
 
-compiled_msw_issue_mint_v3 = compile_source(
+compiled_goerli_msw_issue_v4 = compile_source(
     '''
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
@@ -57,7 +57,7 @@ contract MSIssuer {
         uint numSigns;
     }
 
-    address public constant WETHSTokenAddress = address(0x2589330Abe857B4aAc657a73756313606381AaF5);
+    address public constant WETHSTokenAddress = address(0xAC2Ff53D3329f0aA57A23dafF393704Dc4F30D7d);
 
     // mapping from tx index => owner => bool
     mapping(uint => mapping(address => bool)) public isConfirmed;
@@ -156,8 +156,11 @@ contract MSIssuer {
         emit SubmitTransaction(msg.sender, txIndex, _to, _value, _data);
     }
     
-    function initIssue( address _to, uint _value) public onlyOwner {
+    function initIssue(address _to, uint _value) public onlyOwner {
+        // Generate the issueId.
+        //issueId = bytes20(keccak256(_to, block.blockhash(block.number - 1)));
         uint issueIndex = issues.length;
+        
         issues.push(
             Issue({
                 to: _to,

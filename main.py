@@ -2,28 +2,29 @@ import os
 import logging
 import time
 from web3 import Web3
-from compiled_contracts.weths_v4_minted_compiled import compiled_weths_v4_minted
-from compiled_contracts.msw_issue_and_mint_v3 import compiled_msw_issue_mint_v3
-from compiled_contracts.goerli_wsibr_v4_minted_compiled import compiled_wsibr_v4_minted
-
+from compiled_contracts.goerli_wsibr_v8_minted_compiled import compiled_goerli_wsibr_v8
+from compiled_contracts.goerli_msw_issue_v4 import compiled_goerli_msw_issue_v4
+from compiled_contracts.sibr_weth_v8_compiled import compiled_sibr_weth_v8
+from compiled_contracts.sibr_msw_issue_v4 import compiled_sibr_msw_issue_v4
 
 logging.basicConfig(level=logging.DEBUG)
-IS_INFURA = True
-infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
-#infura_url = 'https://rpc.test.siberium.net'
+IS_INFURA = False
+#infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
+infura_url = 'https://rpc.test.siberium.net'
 first_adr = '0xade657554299E886Fb0150d4293D441f278A9854'
 second_adr = '0xc6322A3D73f791dFf977984F5380468885Beed77'
 third_adr = '0xe52FB548417eE451192200fdAf8Fa1511daB2300'
+fourth_adr = '0xCdf38647E1333C50Ec2F1104A25F88D16094D327'
 first_adr_pk = '62827a79fb937313b7d736e973f4ca8a33581650f153107de18114ef84a30347'
 second_adr_pk = '540884f10d684620077d6b90a65c1a256f3f00172df5635d73c99178c45950af'
 third_adr_pk = 'c0fcfbef21969b71702481d5023e5ef1cf07ad4a3f0da7d2d71cfdea0e0c7abc'
+fourth_adr_pk = 'a83c718255dc6fe17fa90304ee4bea9fa9d7a74d1eb402d69481b009bd8507bc'
 adrs_pk = {
     first_adr: first_adr_pk,
-    second_adr: second_adr_pk
+    second_adr: second_adr_pk,
+    third_adr: third_adr_pk,
+    fourth_adr: fourth_adr_pk
 }
-goerli_ms_sc_adr_old = '0x6983372b859D63aa372f957C306eA9D50125AA71'
-sibr_ms_sc_adr_old = '0x7838339320008c4374591Fe33B1F395186De8edF'
-ms_sc_abi = '[{"inputs":[{"internalType":"address[]","name":"_owners","type":"address[]"},{"internalType":"uint256","name":"_numConfirmationsRequired","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"ConfirmTransaction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"balance","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"ExecuteTransaction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"RevokeConfirmation","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":false,"internalType":"bytes","name":"data","type":"bytes"}],"name":"SubmitTransaction","type":"event"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"confirmTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"executeTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwners","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"getTransaction","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bool","name":"executed","type":"bool"},{"internalType":"uint256","name":"numConfirmations","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTransactionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"isConfirmed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"numConfirmationsRequired","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"owners","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"revokeConfirmation","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"submitTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"transactions","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bool","name":"executed","type":"bool"},{"internalType":"uint256","name":"numConfirmations","type":"uint256"}],"stateMutability":"view","type":"function"},{"stateMutability":"payable","type":"receive"}]'
 
 
 def standard_trx_build_for_sc_call_with_gas(base_adr=None) -> dict:
@@ -142,15 +143,7 @@ def set_owner_to_sc(new_owner_adr, sc_adr, sc_abi):
     web3 = Web3(Web3.HTTPProvider(infura_url, request_kwargs={'timeout': 60}))
     contract = web3.eth.contract(address=web3.to_checksum_address(sc_adr), abi=sc_abi)
 
-    build_trx_config = {
-        'chainId': web3.eth.chain_id,
-        'from': first_adr,
-        'gasPrice': web3.eth.gas_price,
-        'nonce': web3.eth.get_transaction_count(first_adr)
-    }
-    gas = web3.eth.estimate_gas(build_trx_config) + 200000
-    build_trx_config['gas'] = gas + int(gas * 0.2)
-
+    build_trx_config = standard_trx_build_for_sc_call_with_gas()
     f = contract.functions.setOwner(web3.to_checksum_address(new_owner_adr))
     unsigned_tx = f.build_transaction(build_trx_config)
     signed_tx = web3.eth.account.sign_transaction(unsigned_tx, first_adr_pk)
@@ -307,11 +300,13 @@ def load_contract(cs):
         'gasPrice': web3.eth.gas_price,
         'nonce': web3.eth.get_transaction_count(first_adr)
     }
-    gas = web3.eth.estimate_gas(build_trx_config) + 900000
+    gas_eddition = 3000000
+
+    gas = web3.eth.estimate_gas(build_trx_config) + gas_eddition
     build_trx_config['gas'] = gas
 
-    #called_constructor = ctr.constructor([first_adr, second_adr], 2)
-    called_constructor = ctr.constructor()
+    called_constructor = ctr.constructor([first_adr, second_adr], 2)
+    #called_constructor = ctr.constructor()
     # .buildTransaction(tx_dict)
     tx = called_constructor.build_transaction(build_trx_config)
 
@@ -330,15 +325,15 @@ def get_last_msw_issue(sc_address, sc_abi):
     return contract.functions.getIssuesCount().call()
 
 
-def make_transaction(to_adr=second_adr):
+def make_transaction(from_adr=first_adr, to_adr=second_adr, value=0.0001):
     web3 = Web3(Web3.HTTPProvider(infura_url, request_kwargs={'timeout': 60}))
 
     tx_dict = {
         'chainId': web3.eth.chain_id,
-        'from': web3.to_checksum_address(first_adr),
+        'from': web3.to_checksum_address(from_adr),
         'to': web3.to_checksum_address(to_adr),
-        'nonce': web3.eth.get_transaction_count(first_adr),
-        'value': web3.to_wei(0.00013, 'ether'),
+        'nonce': web3.eth.get_transaction_count(from_adr),
+        'value': web3.to_wei(value, 'ether'),
         'gasPrice': web3.eth.gas_price,
     }
 
@@ -349,7 +344,7 @@ def make_transaction(to_adr=second_adr):
     gas = web3.eth.estimate_gas(tx_dict) + gas_eddition
     tx_dict['gas'] = gas + int(gas*0.2)
 
-    signed_tx = web3.eth.account.sign_transaction(tx_dict, first_adr_pk)
+    signed_tx = web3.eth.account.sign_transaction(tx_dict, adrs_pk[from_adr])
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     # Wait for the transaction to be mined, and get the transaction receipt
     tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
@@ -374,18 +369,23 @@ def test():
     print("hello")
 
 
-sibr_weths_v7_sc_adr = '0x2589330Abe857B4aAc657a73756313606381AaF5'
-sibr_msw_issue_mint_v3_adr = '0x8CeD35824051b187d4fFDE9c2492CB113E2C120A'
+sibr_weths_v8_adr = '0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182'
+sibr_msw_issuer_v4_adr = '0x14DE0EAe16cFd97Eb19e4a97d82Dad72E02D6A8A'
+
+goerli_wsibr_v8_adr = '0xac2ff53d3329f0aa57a23daff393704dc4f30d7d'
+goerli_msw_issuer_v4_adr = '0xD9FeF2B97B52082711fBDF4fB99670E717e599c1'
+
 
 if __name__ == '__main__':
     test()
-    make_transaction(third_adr)
-    #c_sc = compiled_wsibr_v4_minted
-    #c_sc = compiled_wsibr_v4_minted
-    #c_sc = compiled_msw_issue_mint_v3
+    #make_transaction(fourth_adr, first_adr, 0.09570947275)
+    c_sc = compiled_sibr_weth_v8
+    #c_sc = compiled_sibr_msw_issue_v4
+    #c_sc = compiled_goerli_wsibr_v8
+    #c_sc = compiled_goerli_msw_issue_v4
+    contract_id, contract_interface = c_sc.popitem()
     #contract_id, contract_interface = c_sc.popitem()
-    #contract_id, contract_interface = c_sc.popitem()
-    #abi = contract_interface['abi']
+    abi = contract_interface['abi']
     #make_token_transfer(first_adr, second_adr, weths_v7_sc_adr, abi)
     # init_issue(msw_issue_mint_v3_adr, abi)
     # issue_num = get_last_msw_issue(msw_issue_mint_v3_adr, abi) - 1
@@ -394,10 +394,9 @@ if __name__ == '__main__':
     # sign_issue(issue_num, second_adr, msw_issue_mint_v3_adr, abi)
     # provide_issue(issue_num, first_adr, msw_issue_mint_v3_adr, abi)
     # get_issue(issue_num, msw_issue_mint_v3_adr, abi)
-    #ms_sc_num_conf(msissue_sc_adr, abi)
-    #get_owner_from_sc(weths_v7_sc_adr, abi)
-    #set_owner_to_sc(msw_issue_mint_v3_adr, weths_v7_sc_adr, abi)
-    #get_owner_from_sc(weths_v7_sc_adr, abi)
+    #get_owner_from_sc(sibr_weths_v8_adr, abi)
+    #set_owner_to_sc(sibr_msw_issuer_v4_adr, sibr_weths_v8_adr, abi)
+    #get_owner_from_sc(sibr_weths_v8_adr, abi)
     #mint_tokens(weths_v7_sc_adr, abi)
     #balance_of_adr_in_tokens(first_adr, weths_v7_sc_adr, abi)
     #balance_of_adr_in_tokens(second_adr, weths_v7_sc_adr, abi)
