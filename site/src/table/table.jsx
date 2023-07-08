@@ -1,44 +1,30 @@
 import { Component } from "react";
-
 import { FcCheckmark, FcClock } from 'react-icons/fc';
 
 import "./table.css";
 
 export default class Table extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            URL: props.URL,
-            Items: props.Items
-        };
-    }
-
-    async componentDidMount () {
-        const Items = await this.loadData();
-        this.setState(() => ({ Items }));
-    }
-
-    async loadData() {
-        const {URL} = this.state; 
-        let res = await fetch(URL);
-        return res.json();
-    }
-
     render() {
-        const {Items} = this.state;
-        console.log(Items);
+        const {Items} = this.props;
 
         return (
             <table>
                 <thead>
                     <tr>
-                        <td>Status</td>
-                        <td>Time</td>
-                        <td>From</td>
-                        <td>Sending Amount & Address</td>
-                        <td>Receiving Amount & Address</td>
-                        <td>To</td>
+                        {
+                            [
+                                "Status",
+                                "Time",
+                                "From",
+                                "Sending Amount & Address",
+                                "Receiving Amount & Address",
+                                "To"
+                            ].map((value, key) => {
+                                return (
+                                    <td key = {key}>{value}</td>
+                                );
+                            })
+                        }
                     </tr>
                 </thead>
                 <tbody>
