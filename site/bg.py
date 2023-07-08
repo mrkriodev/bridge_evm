@@ -31,7 +31,7 @@ def StatusListToJSONList(StatusList):
 # Sample data for the API
 status_data = [
     Status(id=1, status="Pending"),
-    Status(id=2, status="Completed"),
+    Status(id=2, status="Transfer in"),
     Status(id=3, status="Pending")
 ]
 
