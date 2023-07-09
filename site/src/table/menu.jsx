@@ -23,6 +23,7 @@ export default class Menu extends Component {
             Items: null,
             Error: null
         };
+        this.Sorted = [];
     }
 
     async RefreshTransactions(URL) {
@@ -66,7 +67,7 @@ export default class Menu extends Component {
         const {URL} = this.state;
         await this.RefreshTransactions(URL);
     }
-
+    
     async FilterPendingTransactions() {
         let {URL, Items, Error} = this.state;
         if(Items == null && Error != null) {
