@@ -46,6 +46,9 @@ export default class Menu extends Component {
         .catch(error => {
             console.log(error);
 
+            if(CachedItems == null) {
+                return;
+            }
             let {__URL, __IsValid, __Items, __Error} = CachedItems;
 
             this.setState ({
@@ -73,6 +76,11 @@ export default class Menu extends Component {
                 Error: null
             });
         }
+
+        if(Items == null) {
+            return;
+        }
+
         Items = Items.filter(Item => Item.Status.toLowerCase() === "pending");
 
         this.setState({
@@ -95,6 +103,10 @@ export default class Menu extends Component {
                 Items: CachedItems,
                 Error: null
             });
+        }
+
+        if(Items == null) {
+            return;
         }
 
         switch(__key) {

@@ -16,12 +16,12 @@ export default class Table extends Component {
                                 "Status",
                                 "Time",
                                 "From",
-                                "Sending Amount & Address",
-                                "Receiving Amount & Address",
+                                "Sending",
+                                "Receiving",
                                 "To"
                             ].map((value, key) => {
                                 return (
-                                    <td key = {key}>{value}</td>
+                                    <td className = "TableHeaderName" key = {key}>{value}</td>
                                 );
                             })
                         }
@@ -30,7 +30,7 @@ export default class Table extends Component {
                 <tbody>
                 {Items && Items.map((value, key) => {
                     return (
-                        <tr key = {key} className = "Item">
+                        <tr key = {key} className = "Items">
                             <td>{value["Status"] === "Transfer in" || value["Status"] === "Transfer out" ? <FcCheckmark />:<FcClock />}</td>
                             <td>{value["Status"]}</td>
                             <td>{value["From"]}</td>

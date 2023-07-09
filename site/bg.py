@@ -34,9 +34,9 @@ def StatusListToJSONList(StatusList):
 
 # Sample data for the API
 status_data = [
-    Status(ID = 1, Status = "Pending", From = "A", To = "B", Sending = 0.1, Receiving = 0.0),
-    Status(ID = 2, Status = "Transfer in", From = "B", To = "C", Sending = 0.2, Receiving = 0.0),
-    Status(ID = 3, Status = "Pending", From = "C", To = "D", Sending = 0.0, Receiving = 0.3)
+    Status(ID = 1, Status = "Pending", From = "Askfjdngslknfg", To = "fsgn sjdn fgfd", Sending = 0.1, Receiving = 0.0),
+    Status(ID = 2, Status = "Transfer in", From = "Bsdfgsdfg", To = "Csdfgjnbkdjfgs", Sending = 0.2, Receiving = 0.0),
+    Status(ID = 3, Status = "Pending", From = "Csfdgjksndlfgkjnslkdfg", To = "Dsdfgkjndkfjghnsf", Sending = 0.0, Receiving = 0.3)
 ]
 
 StatusListToJSONList(status_data)

@@ -14,3 +14,7 @@ thead {
     white-space: nowrap;
     font-weight: 700;
 }
+
+.TableHeaderName {
+    flex-wrap: wrap;
+}
