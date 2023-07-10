@@ -6,6 +6,6 @@ import App from "./app";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <App MenuLink = "google.com" URL = "http://127.0.0.1:8000/api/status" />
+        <App MenuLink = "92.255.109.253" URL = "http://92.255.109.253/api/status" />
     </React.StrictMode>
 );

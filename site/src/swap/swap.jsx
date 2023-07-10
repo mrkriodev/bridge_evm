@@ -1,6 +1,6 @@
 import { Component } from "react";
 
-import { GiArchBridge } from "react-icons/gi";
+import { GiArchBridge, GiFox } from "react-icons/gi";
 import { FaEthereum } from "react-icons/fa";
 
 import "./swap.css";
@@ -27,6 +27,14 @@ export default class Swap extends Component {
             Amount: Amount,
             Success: false,
             ErrorState: Message,
+            MetamaskAddress: MetamaskAddress
+        });
+        
+        setTimeout(this.setState.bind(this), 5000, {
+            To: To,
+            Amount: Amount,
+            Success: false,
+            ErrorState: null,
             MetamaskAddress: MetamaskAddress
         });
     }
@@ -124,6 +132,30 @@ export default class Swap extends Component {
         .catch(Error => this.SetErrorMessage(Error.message === DeniedMessage ? "User denied transaction" : Error.message));
     }
 
+    async HandleMetamaskConnect() {
+        let {MetamaskAddress} = this.state;
+        if(MetamaskAddress !== null) {
+            return;
+        }
+
+        let AvailableAccounts = await window.ethereum.request({
+            method: 'wallet_requestPermissions',
+            params: [{ eth_accounts: {} }]
+        }).catch(Error => {
+            console.log(`Error when connection metamask: ${Error.message}`);
+        });
+
+        AvailableAccounts = AvailableAccounts === null || AvailableAccounts === undefined ? [null] : AvailableAccounts;
+        let {To, Amount, Success, ErrorState} = this.state;
+        this.setState ({
+            To: To,
+            Amount: Amount,
+            Success: Success,
+            ErrorState: ErrorState,
+            MetamaskAddress: AvailableAccounts[0].caveats[0].value[0]
+        });
+    }
+
     render() {
         let {MetamaskAddress, To, Amount, ErrorState, Success} = this.state;
 
@@ -156,7 +188,10 @@ export default class Swap extends Component {
                     }} value = {Amount === null ? "" : Amount} type = "number" placeholder = "Amount" className = "AmountInput" />
                 </div>
                 <p className = { Success ? "ErrorFieldGreen" : "ErrorFieldRed"} >{ErrorState}</p>
-                <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, To, Amount)} type = "button">Swap  <FaEthereum/></button>
+                <div className = "Buttons">
+                    <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, To, Amount)} type = "button">Swap  <FaEthereum/></button>
+                    <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect  <GiFox/></button>
+                </div>
             </div>
         );
     }

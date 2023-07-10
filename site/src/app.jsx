@@ -23,19 +23,18 @@ export default class App extends Component {
 
         console.log(`Injected provider is ${InjectedProvider === true ? "supported" : "unsupported"}`);
     
+        let AvailableAccounts = await window.ethereum.request ({
+            method: "eth_requestAccounts",
+        }).catch(Error => {
+            console.log(`Could not connect to a wallet: ${Error}`);
+        })
+
         this.setState ({
             MenuLink: MenuLink,
             SuccessProps: SuccessProps,
             URL: URL,
             InjectedProvider: InjectedProvider,
-            Accounts:   await window.ethereum.request ({
-                            method: "eth_requestAccounts",
-                        }).catch(Error => {
-                            console.log(`Could not connect to a wallet: ${Error}`);
-                        })
-                    //
-                //
-            //
+            Accounts: AvailableAccounts === null || AvailableAccounts === undefined ? [null] : AvailableAccounts
         });
 
         let {Accounts} = this.state;
@@ -64,13 +63,17 @@ export default class App extends Component {
             <div className = "Page">
                 <div>
                     <h1 className = "Logotype">Bridge Guardian</h1>
-                    <div>
-                        <img src = {Sber} height ="200px" width ="200px"/>
-                    </div>
                 </div>
                 {
-                    InjectedProvider ? (SuccessProps ? <Menu URL = {URL}/> : <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]}/>):
-                    <p>Your browser does not have metamask extension. Install it</p>
+                    InjectedProvider ? (
+                        SuccessProps ? <Menu URL = {URL}/> : (
+                            <>
+                                <img src = {Sber} height ="200px" width ="200px" alt = "Sber logo"/>
+                                <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]}/>
+                            </>
+                        )
+                    ):
+                    <p>Your browser does not have metamask extension. Install it or log in</p>
                 }
             </div>
         );

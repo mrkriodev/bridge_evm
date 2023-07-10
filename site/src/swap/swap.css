@@ -10,6 +10,48 @@
     font-weight: 600;
 }
 
+.Buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.ConnectMetamaskButton {
+    background-color: orange;
+    border: none;
+    height: 40px;
+    width: 120px;
+    cursor: pointer;
+    margin-bottom: 32px;
+    border-radius: 12px;
+    margin-left: 10px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.ConnectMetamaskButton:hover {
+    background-color: white;
+    color:rgb(172, 84, 255);
+    border: none;
+    height: 40px;
+    width: 120px;
+    cursor: pointer;
+    margin-bottom: 32px;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+.ConnectMetamaskButton:focus {
+    background-color: black;
+    color:white;
+    border: none;
+    height: 40px;
+    width: 120px;
+    cursor: pointer;
+    margin-bottom: 32px;
+    border-radius: 12px;
+    margin-left: 10px;
+}
 
 .SwapMenu {
     display: flex;
