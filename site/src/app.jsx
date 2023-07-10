@@ -43,6 +43,10 @@ export default class App extends Component {
         for(let Iter in Accounts) {
             console.log(Accounts[Iter]);
         }
+
+        window.ethereum.on('chainChanged', () => {
+            window.location.reload();
+        });
     }
 
     async SetSuccessProps() {
@@ -68,11 +72,11 @@ export default class App extends Component {
                     InjectedProvider ? (
                         SuccessProps ? <Menu URL = {URL}/> : (
                             <>
-                                <img src = {Sber} height ="200px" width ="200px" alt = "Sber logo"/>
+                                <img src = {Sber} height ="160px" width ="160px" alt = "Sber logo"/>
                                 <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]}/>
                             </>
                         )
-                    ):
+                    ) :
                     <p>Your browser does not have metamask extension. Install it or log in</p>
                 }
             </div>

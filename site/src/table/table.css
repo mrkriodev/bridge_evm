@@ -19,6 +19,13 @@ thead {
     flex-wrap: wrap;
 }
 
+.Headers {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .Field {
     background-color: transparent;
     border: none;
