@@ -18,3 +18,13 @@ thead {
 .TableHeaderName {
     flex-wrap: wrap;
 }
+
+.Field {
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

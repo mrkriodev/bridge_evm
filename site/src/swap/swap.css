@@ -1,3 +1,16 @@
+.ErrorFieldRed {
+    color: rgb(210, 60, 85);
+    font-size: large;
+    font-weight: 600;
+}
+
+.ErrorFieldGreen {
+    color: rgb(0, 187, 0);
+    font-size: large;
+    font-weight: 600;
+}
+
+
 .SwapMenu {
     display: flex;
     flex-direction: column;
@@ -70,6 +83,11 @@ a {
     border-right: 1px solid rgb(184, 184, 184);
 }
 
+.Bridge {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .InputField {
     color: rgb(47, 47, 47);
     text-overflow: ellipsis;
@@ -93,8 +111,14 @@ a {
     font-weight: 700;
 
     border-radius: 12px;
-    background-color: rgb(157, 53, 254);
+    background-color: rgb(0, 187, 0);
     margin-bottom: 32px;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .SwapButton:hover {

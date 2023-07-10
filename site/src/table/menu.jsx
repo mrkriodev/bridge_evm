@@ -82,7 +82,7 @@ export default class Menu extends Component {
             return;
         }
 
-        Items = Items.filter(Item => Item.Status.toLowerCase() === "pending");
+        Items = Items.filter(Item => Item.Status.toLowerCase() !== "pending");
 
         this.setState({
             URL: URL,
@@ -121,14 +121,14 @@ export default class Menu extends Component {
             case 1:
                 console.log("Accending Amount");
                 Items.sort((first, second) => {
-                    return first.Sending - second.Sending;
+                    return first.Amount - second.Amount;
                 });
                 break;
 
             case 2:
                 console.log("Discending Amount");
                 Items.sort((first, second) => {
-                    return second.Sending - first.Sending;
+                    return second.Amount - first.Amount;
                 });
                 break;
 

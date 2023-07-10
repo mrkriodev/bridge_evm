@@ -18,10 +18,11 @@ app.add_middleware(
 class Status(BaseModel):
     ID: int
     Status: str
+    Address: str
     From: str
     To: str
-    Sending: float
-    Receiving: float
+    Signs: int
+    Amount: int
 
 def StatusListToJSONList(StatusList):
     res = []
@@ -34,9 +35,9 @@ def StatusListToJSONList(StatusList):
 
 # Sample data for the API
 status_data = [
-    Status(ID = 1, Status = "Pending", From = "Askfjdngslknfg", To = "fsgn sjdn fgfd", Sending = 0.1, Receiving = 0.0),
-    Status(ID = 2, Status = "Transfer in", From = "Bsdfgsdfg", To = "Csdfgjnbkdjfgs", Sending = 0.2, Receiving = 0.0),
-    Status(ID = 3, Status = "Pending", From = "Csfdgjksndlfgkjnslkdfg", To = "Dsdfgkjndkfjghnsf", Sending = 0.0, Receiving = 0.3)
+    Status(ID = 1, Status = "Pending", Address = "A", From = "a1", To = "a2", Signs = 2, Amount = 1),
+    Status(ID = 2, Status = "Success", Address = "B", From = "b1", To = "b2", Signs = 1, Amount = 2),
+    Status(ID = 3, Status = "Pending", Address = "C", From = "c1", To = "c2", Signs = 3, Amount = 3)
 ]
 
 StatusListToJSONList(status_data)

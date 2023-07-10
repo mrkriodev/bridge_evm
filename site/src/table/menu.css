@@ -5,12 +5,12 @@
 }
 
 .SortByElement:hover {
-    background-color: rgb(88, 131, 132);
+    background-color: rgb(158, 205, 206);
     transition: 0.2s;
 }
 
 .SortByElement:focus {
-    background-color: rgb(55, 83, 84);
+    background-color: rgb(109, 155, 157);
 }
 
 .SortByElement {
@@ -169,6 +169,20 @@ transition:
     white-space: nowrap;
     color: white;
     font-weight: 700;
+    cursor: pointer;
+}
+
+.Menu .Header .LeftSide button:hover {
+    height: 32px;
+    margin-left: 10px;
+
+    background-color: white;
+    border: none;
+    padding: 8px 8px 8px 8px;
+    border-radius: 4px;
+    color: rgb(157, 53, 254);
+    font-weight: 700;
+    transition: 0.3s;
     cursor: pointer;
 }
 

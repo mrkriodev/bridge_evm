@@ -14,11 +14,11 @@ export default class Table extends Component {
                         {
                             [
                                 "Status",
-                                "Time",
-                                "From",
-                                "Sending",
-                                "Receiving",
-                                "To"
+                                "Signs",
+                                "From hash",
+                                "To hash",
+                                "Address",
+                                "Amount"
                             ].map((value, key) => {
                                 return (
                                     <td className = "TableHeaderName" key = {key}>{value}</td>
@@ -31,12 +31,12 @@ export default class Table extends Component {
                 {Items && Items.map((value, key) => {
                     return (
                         <tr key = {key} className = "Items">
-                            <td>{value["Status"] === "Transfer in" || value["Status"] === "Transfer out" ? <FcCheckmark />:<FcClock />}</td>
-                            <td>{value["Status"]}</td>
-                            <td>{value["From"]}</td>
-                            <td>{value["Sending"]}</td>
-                            <td>{value["Receiving"]}</td>
-                            <td>{value["To"]}</td>
+                            <td>{value["Status"] === "Pending" ? <FcCheckmark /> : <FcClock />}</td>
+                            <td><input className = "Field" value = {value["Signs"]} readOnly/></td>
+                            <td><input className = "Field" value = {value["From"]} readOnly/></td>
+                            <td><input className = "Field" value = {value["To"]} readOnly/></td>
+                            <td><input className = "Field" value = {value["Address"]} readOnly/></td>
+                            <td><input className = "Field" value = {value["Amount"] + " ETH"} readOnly/></td>
                         </tr>
                     );
                 })}

@@ -2,15 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import "./index.css";
-import Menu from "./table/menu";
-import Swap from "./swap/swap";
+import App from "./app";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <div className = "Page">
-            <h1 className = "Logotype">Bridge Records</h1>
-            <Swap MenuLink = "google.com"/>
-            {/* <Menu URL = "http://127.0.0.1:8000/api/status" /> */}
-        </div>
+        <App MenuLink = "google.com" URL = "http://127.0.0.1:8000/api/status" />
     </React.StrictMode>
 );
