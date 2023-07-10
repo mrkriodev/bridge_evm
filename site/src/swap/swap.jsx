@@ -129,30 +129,24 @@ export default class Swap extends Component {
         .then(() => {
             this.props.SuccessProps();
         })
-        .catch(Error => this.SetErrorMessage(Error.message === DeniedMessage ? "User denied transaction" : Error.message));
+        .catch(Error => this.SetErrorMessage(Error.message === DeniedMessage ? "User rejected" : Error.message));
     }
 
     async HandleMetamaskConnect() {
-        let {MetamaskAddress} = this.state;
-        if(MetamaskAddress !== null) {
-            return;
-        }
-
-        let AvailableAccounts = await window.ethereum.request({
+        let AvailableAccounts = await window.ethereum.request ({
             method: 'wallet_requestPermissions',
             params: [{ eth_accounts: {} }]
-        }).catch(Error => {
-            console.log(`Error when connection metamask: ${Error.message}`);
-        });
+        })
+        .catch(Error => this.SetErrorMessage(Error.message));
 
-        AvailableAccounts = AvailableAccounts === null || AvailableAccounts === undefined ? [null] : AvailableAccounts;
+        AvailableAccounts = AvailableAccounts === null || AvailableAccounts === undefined ? [null] : AvailableAccounts[0].caveats[0].value[0];
         let {To, Amount, Success, ErrorState} = this.state;
         this.setState ({
             To: To,
             Amount: Amount,
             Success: Success,
             ErrorState: ErrorState,
-            MetamaskAddress: AvailableAccounts[0].caveats[0].value[0]
+            MetamaskAddress: AvailableAccounts
         });
     }
 
