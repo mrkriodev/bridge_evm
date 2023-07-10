@@ -1,0 +1,110 @@
+.SwapMenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    
+    width: 360px;
+    height: 256px;
+
+    top: 30%;
+
+    border-radius: 12px;
+
+    background-color: rgb(172, 84, 255);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+a {
+    text-decoration: none;
+}
+
+.AllInputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.AmountInput {
+    border-radius: 12px;
+    border: none;
+    outline: none;
+
+    height: 32px;
+    font-size: 16px;
+    padding: 0px 16px 0 16px;
+
+    color: rgb(47, 47, 47);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.InputFields {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    margin: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
+    
+    height: 32px;
+    border-radius: 12px;
+}
+
+.InputFields span {
+    height: 50%;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-right: 1px solid rgb(184, 184, 184);
+}
+
+.InputField {
+    color: rgb(47, 47, 47);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    width: 140px;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 16px;
+}
+
+.SwapButton {
+    height: 40px;
+    width: 120px;
+    border: none;
+
+    color: white;
+    font-weight: 700;
+
+    border-radius: 12px;
+    background-color: rgb(157, 53, 254);
+    margin-bottom: 32px;
+}
+
+.SwapButton:hover {
+    color: rgb(157, 53, 254);
+    background-color: white;
+    transition: 0.2s;
+}
+
+.SwapButton:focus {
+    color: white;
+    background-color: black;
+    transition: 0.2s;
+}
