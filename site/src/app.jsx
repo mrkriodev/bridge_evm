@@ -2,7 +2,6 @@ import { Component } from "react";
 
 import Swap from "./swap/swap";
 import Menu from "./table/menu";
-
 import Sber from "./img/sber.png";
 
 export default class App extends Component {

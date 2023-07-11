@@ -2,6 +2,8 @@ import { Component } from "react";
 
 import { GiArchBridge, GiFox } from "react-icons/gi";
 import { FaEthereum } from "react-icons/fa";
+import { BsFillArrowRightSquareFill } from "react-icons/bs";
+import Sber from "../img/sber.png";
 
 import "./swap.css";
 
@@ -129,7 +131,7 @@ export default class Swap extends Component {
         .then(() => {
             this.props.SuccessProps();
         })
-        .catch(Error => this.SetErrorMessage(Error.message === DeniedMessage ? "User rejected" : Error.message));
+        .catch(Error => this.SetErrorMessage(Error.message === DeniedMessage ? "Rejected by user" : Error.message));
     }
 
     async HandleMetamaskConnect() {
@@ -159,7 +161,7 @@ export default class Swap extends Component {
                     <div className = "InputFields">
                         <input value = {MetamaskAddress} type = "text" className = "InputField" placeholder = "From" readOnly/>
                         {
-                            Success ? <GiArchBridge className = "Bridge" /> : <span />
+                            Success ? <GiArchBridge className = "Bridge" /> : <BsFillArrowRightSquareFill className = "Arrow"/>
                         }
                         <input onChange = {Event => {
                             let {Amount, MetamaskAddress} = this.state;
@@ -183,8 +185,8 @@ export default class Swap extends Component {
                 </div>
                 <p className = { Success ? "ErrorFieldGreen" : "ErrorFieldRed"} >{ErrorState}</p>
                 <div className = "Buttons">
-                    <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, To, Amount)} type = "button">Swap  <FaEthereum/></button>
-                    <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect  <GiFox/></button>
+                    <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, To, Amount)} type = "button">Swap<FaEthereum/></button>
+                    <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect<GiFox/></button>
                 </div>
             </div>
         );

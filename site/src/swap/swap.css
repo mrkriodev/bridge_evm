@@ -118,11 +118,11 @@ input[type=number] {
     border-radius: 12px;
 }
 
-.InputFields span {
+.Arrow {
     height: 50%;
     margin-left: 10px;
     margin-right: 10px;
-    border-right: 1px solid rgb(184, 184, 184);
+    color: rgb(93, 93, 93);
 }
 
 .Bridge {
