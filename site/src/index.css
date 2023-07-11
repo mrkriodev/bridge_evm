@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    background-color: rgb(187, 115, 255);
+}
+
+.Logotype {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 30px;
+
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.Page {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    margin-right: 50px;
+    margin-left: 50px;
+}
