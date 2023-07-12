@@ -41,7 +41,12 @@ export default class Swap extends Component {
         });
     }
 
-    async HandleSwapClick(MetamaskAddress, To, Amount) {
+    async HandleSwapClick(MetamaskAddress, Amount) {
+        let {ChainID} = this.props;
+        let SiberToEth = "0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182";
+        let EthToSiber = "0x0466B5ccccE6c334331f3fB08a5ff26c29B5E7eA";
+
+        let To = ChainID === 111111 || ChainID === 111000 ? SiberToEth : EthToSiber;
         console.log(`Preparing for transaction. Arguments are: ${MetamaskAddress} ${To} ${Amount}`);
 
         if(MetamaskAddress === undefined || MetamaskAddress === null) {
@@ -100,7 +105,6 @@ export default class Swap extends Component {
             MetamaskAddress: MetamaskAddress
         });
 
-        // 0x0466B5ccccE6c334331f3fB08a5ff26c29B5E7eA
         let DeniedMessage = "MetaMask Tx Signature: User denied transaction signature.";
 
         window.ethereum
@@ -153,7 +157,9 @@ export default class Swap extends Component {
     }
 
     render() {
-        let {MetamaskAddress, To, Amount, ErrorState, Success} = this.state;
+        let {MetamaskAddress, Amount, ErrorState, Success} = this.state;
+        let Image = <img src = {Sber} alt = "Sber logo" width = "20px" height = "20px" />;
+        let {InjectedProvider, ChainID} = this.props;
 
         return (
             <div className = "SwapMenu">
@@ -163,15 +169,9 @@ export default class Swap extends Component {
                         {
                             Success ? <GiArchBridge className = "Bridge" /> : <BsFillArrowRightSquareFill className = "Arrow"/>
                         }
-                        <input onChange = {Event => {
-                            let {Amount, MetamaskAddress} = this.state;
-
-                            this.setState ({
-                                To: Event.target.value,
-                                Amount: Amount,
-                                MetamaskAddress: MetamaskAddress
-                            });
-                        }} value = {To === null ? "" : To} type = "text" className = "InputField" placeholder = "To" />
+                        {
+                            InjectedProvider ? (ChainID === 111111 || ChainID === 111000? <FaEthereum /> : Image) : <input value = "" type = "text" className = "InputField" placeholder = "To" readOnly/>
+                        }
                     </div>
                     <input onChange = {Event => {
                         let {To, MetamaskAddress} = this.state;
@@ -185,8 +185,8 @@ export default class Swap extends Component {
                 </div>
                 <p className = { Success ? "ErrorFieldGreen" : "ErrorFieldRed"} >{ErrorState}</p>
                 <div className = "Buttons">
-                    <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, To, Amount)} type = "button">Swap<FaEthereum/></button>
                     <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect<GiFox/></button>
+                    <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, Amount)} type = "button">Swap<FaEthereum/></button>
                 </div>
             </div>
         );

@@ -11,13 +11,14 @@ export default class App extends Component {
         this.state = {
             MenuLink: props.MenuLink,
             SuccessProps: false,
+            ChainID: null,
             URL: props.URL,
             Accounts: null
         };
     }
 
     async componentDidMount() {
-        let {MenuLink, URL, SuccessProps} = this.state;
+        let {MenuLink, URL, SuccessProps, ChainID} = this.state;
         let InjectedProvider = typeof window.ethereum !== 'undefined' ? true : false;
 
         console.log(`Injected provider is ${InjectedProvider === true ? "supported" : "unsupported"}`);
@@ -29,6 +30,7 @@ export default class App extends Component {
         })
 
         this.setState ({
+            ChainID: ChainID,
             MenuLink: MenuLink,
             SuccessProps: SuccessProps,
             URL: URL,
@@ -43,9 +45,18 @@ export default class App extends Component {
             console.log(Accounts[Iter]);
         }
 
-        window.ethereum.on('chainChanged', () => {
-            window.location.reload();
-        });
+        setInterval(async () => {
+            let {MenuLink, SuccessProps, URL, InjectedProvider, Accounts} = this.state;
+            
+            this.setState ({
+                MenuLink: MenuLink,
+                SuccessProps: SuccessProps,
+                URL: URL,
+                InjectedProvider: InjectedProvider,
+                Accounts: Accounts,
+                ChainID: await window.ethereum.request({ method: 'eth_chainId' })
+            });
+        }, 1000);
     }
 
     async SetSuccessProps() {
@@ -60,7 +71,7 @@ export default class App extends Component {
     }
 
     render() {
-        let {InjectedProvider, Accounts, SuccessProps, URL} = this.state;
+        let {InjectedProvider, Accounts, SuccessProps, URL, ChainID} = this.state;
 
         return (
             <div className = "Page">
@@ -72,7 +83,7 @@ export default class App extends Component {
                         SuccessProps ? <Menu URL = {URL}/> : (
                             <>
                                 <img src = {Sber} height ="160px" width ="160px" alt = "Sber logo"/>
-                                <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]}/>
+                                <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]} InjectedProvider = {InjectedProvider} ChainID = {Number(ChainID, 10)}/>
                             </>
                         )
                     ) :

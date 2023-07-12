@@ -19,6 +19,10 @@ thead {
     flex-wrap: wrap;
 }
 
+.Arrow {
+    color: rgb(93, 93, 93);
+}
+
 .Field {
     background-color: transparent;
     border: none;

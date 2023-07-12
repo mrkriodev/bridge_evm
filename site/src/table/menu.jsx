@@ -164,7 +164,7 @@ export default class Menu extends Component {
                         </div>
                     </div>
                 </div>
-                <Table Items = {this.state.Items}/>
+                <Table Items = {this.state.Items} ChainID = {this.props.ChainID}/>
             </div>
         );
     }
