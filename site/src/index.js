@@ -6,6 +6,6 @@ import App from "./app";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <App URL = "http://92.255.109.253:8081/api/status" />
+        <App URL = {process.env.REACT_APP_API_ADDRESS} />
     </React.StrictMode>
 );

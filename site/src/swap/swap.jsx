@@ -18,6 +18,7 @@ export default class Swap extends Component {
             ErrorState: null,
             MetamaskAddress: props.MetamaskAddress
         };
+        console.log(`Got: ${this.props.InjectedProvider}`);
 
         this.ErrorState = "";
     }
@@ -139,6 +140,13 @@ export default class Swap extends Component {
     }
 
     async HandleMetamaskConnect() {
+        let {InjectedProvider} = this.props;
+        console.log(`Injected provider is ${InjectedProvider}`)
+        if(!InjectedProvider) {
+            this.SetErrorMessage("Please install metamask or reload");
+            return;
+        }
+
         let AvailableAccounts = await window.ethereum.request ({
             method: 'wallet_requestPermissions',
             params: [{ eth_accounts: {} }]
@@ -165,12 +173,12 @@ export default class Swap extends Component {
             <div className = "SwapMenu">
                 <div className = "AllInputs">
                     <div className = "InputFields">
-                        <input value = {MetamaskAddress} type = "text" className = "InputField" placeholder = "From" readOnly/>
+                        <input value = {MetamaskAddress} type = "text" className = "InputField" placeholder = "Connect MetaMask" readOnly/>
                         {
                             Success ? <GiArchBridge className = "Bridge" /> : <BsFillArrowRightSquareFill className = "Arrow"/>
                         }
                         {
-                            InjectedProvider ? (ChainID === 111111 || ChainID === 111000? <FaEthereum /> : Image) : <input value = "" type = "text" className = "InputField" placeholder = "To" readOnly/>
+                            InjectedProvider ? (ChainID === 111111 || ChainID === 111000? <FaEthereum /> : Image) : Image
                         }
                     </div>
                     <input onChange = {Event => {
