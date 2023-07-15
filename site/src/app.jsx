@@ -1,6 +1,7 @@
 import { Component } from "react";
 
 import Swap from "./swap/swap";
+import Mint from "./mint/mint";
 import Menu from "./table/menu";
 import Sber from "./img/sber.png";
 
@@ -14,7 +15,8 @@ export default class App extends Component {
             SuccessProps: false,
             ChainID: null,
             URL: props.URL,
-            Accounts: null
+            Accounts: null,
+            BuyCoffee: false
         };
     }
 
@@ -31,7 +33,7 @@ export default class App extends Component {
     }
 
     async componentDidMount() {
-        let {InjectedProvider, MenuLink, URL, SuccessProps, ChainID} = this.state;
+        let {InjectedProvider, MenuLink, URL, SuccessProps, ChainID, BuyCoffee} = this.state;
         InjectedProvider = typeof window.ethereum !== 'undefined';
 
         console.log(`Injected provider is ${InjectedProvider === true ? "supported" : "unsupported"}`);
@@ -45,6 +47,7 @@ export default class App extends Component {
             MenuLink: MenuLink,
             SuccessProps: SuccessProps,
             InjectedProvider: InjectedProvider,
+            BuyCoffee: BuyCoffee,
             URL: URL,
             Accounts: AvailableAccounts === null || AvailableAccounts === undefined ? [null] : AvailableAccounts
         });
@@ -57,12 +60,13 @@ export default class App extends Component {
         }
 
         setInterval(async () => {
-            let {InjectedProvider, MenuLink, SuccessProps, URL, Accounts} = this.state;
+            let {InjectedProvider, MenuLink, SuccessProps, URL, Accounts, BuyCoffee} = this.state;
             
             this.setState ({
                 MenuLink: MenuLink,
                 SuccessProps: SuccessProps,
                 InjectedProvider: InjectedProvider,
+                BuyCoffee: BuyCoffee,
                 URL: URL,
                 Accounts: Accounts,
                 ChainID: await window.ethereum.request({ method: 'eth_chainId' })
@@ -71,21 +75,28 @@ export default class App extends Component {
     }
 
     async SetSuccessProps() {
-        let {InjectedProvider, MenuLink, URL, Accounts, ChainID} = this.state;
+        let {InjectedProvider, MenuLink, URL, Accounts, ChainID, BuyCoffee} = this.state;
 
         this.setState ({
             MenuLink: MenuLink,
             InjectedProvider: InjectedProvider,
             ChainID: ChainID,
             URL: URL,
+            BuyCoffee: BuyCoffee,
             Accounts: Accounts,
             SuccessProps: true
         });
     }
 
+    async SetBuyCoffee() {
+        console.log("Im called");
+        this.setState ({
+            ...this.state, BuyCoffee: true
+        });
+    }
+
     render() {
-        let {Accounts, SuccessProps, URL, ChainID, InjectedProvider} = this.state;
-        console.log(`Take: ${InjectedProvider}`);
+        let {Accounts, SuccessProps, URL, ChainID, InjectedProvider, BuyCoffee} = this.state;
 
         return (
             <div className = "Page">
@@ -95,16 +106,18 @@ export default class App extends Component {
                 {
                     InjectedProvider ? (
                         SuccessProps ? <Menu URL = {URL}/> : (
-                            <>
-                                <img src = {Sber} height ="120px" width ="120px" alt = "Sber logo"/>
-                                <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]} InjectedProvider = {InjectedProvider} ChainID = {Number(ChainID, 10)}/>
-                            </>
+                            BuyCoffee ? <Mint FirstAddress = {Accounts[0]}/> : (
+                                <>
+                                    <img src = {Sber} height ="120px" width ="120px" alt = "Sber logo"/>
+                                    <Swap SetBuyCoffee = {this.SetBuyCoffee.bind(this)} SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]} InjectedProvider = {InjectedProvider} ChainID = {Number(ChainID, 10)}/>
+                                </>
+                            )
                         )
                     ) :
                     SuccessProps ? <Menu URL = {URL}/> : (
                         <>
                             <img src = {Sber} height ="120px" width ="120px" alt = "Sber logo"/>
-                            <Swap SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {null} InjectedProvider = {InjectedProvider} ChainID = {111111}/>
+                            <Swap SetBuyCoffee = {this.SetBuyCoffee.bind(this)} SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {null} InjectedProvider = {InjectedProvider} ChainID = {111111}/>
                         </>
                     )
                 }

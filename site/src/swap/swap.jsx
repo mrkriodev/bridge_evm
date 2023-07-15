@@ -3,6 +3,7 @@ import { Component } from "react";
 import { GiArchBridge, GiFox } from "react-icons/gi";
 import { FaEthereum } from "react-icons/fa";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
+import { SiBuymeacoffee } from "react-icons/si"
 import Sber from "../img/sber.png";
 
 import "./swap.css";
@@ -192,9 +193,21 @@ export default class Swap extends Component {
                     }} value = {Amount === null ? "" : Amount} type = "number" placeholder = "Amount" className = "AmountInput" />
                 </div>
                 <p className = { Success ? "ErrorFieldGreen" : "ErrorFieldRed"} >{ErrorState}</p>
-                <div className = "Buttons">
-                    <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect<GiFox/></button>
-                    <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, Amount)} type = "button">Swap<FaEthereum/></button>
+                <div className = "AllButtons">
+                    <div className = "Buttons">
+                        <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect<GiFox/></button>
+                        <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, Amount)} type = "button">Swap<FaEthereum/></button>
+                    </div>
+                    <button onClick = {() => {
+                        if(MetamaskAddress === null || MetamaskAddress === undefined) {
+                            let Message = `Invalid "From" address: ${MetamaskAddress}`;
+                            console.log(Message);
+                            this.SetErrorMessage(Message);
+                            return;
+                        }
+                
+                        this.props.SetBuyCoffee();
+                    }} className = "BuyMeCoffee">Buy me a Coffee<SiBuymeacoffee className = "Coffee" /></button>
                 </div>
             </div>
         );

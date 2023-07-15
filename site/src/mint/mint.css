@@ -1,0 +1,65 @@
+.Form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+
+    width: 320px;
+    height: 200px;
+    background-color: rgb(172, 84, 255);
+    border: none;
+    border-radius: 12px;
+}
+
+.__InputFields {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 30%;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    outline: none;
+    border: none;
+    
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: white;
+    border: none;
+    border-radius: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.Border {
+    border-bottom: 1px solid rgb(175, 175, 175);
+    margin-bottom: 4px;
+    width: 100%;
+}
+
+.Button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 12px;
+    height: 32px;
+    width: 180px;
+    margin-top: 8px;
+    transition: 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Button:hover {
+    background-color: black;
+    color: white;
+}
+
+.Button:focus {
+    background-color: rgb(87, 87, 87);
+    color: white;
+}
