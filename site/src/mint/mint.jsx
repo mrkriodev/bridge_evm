@@ -17,7 +17,7 @@ export default class Mint extends Component {
     }
 
     async componentDidMount() {
-        this.ContractAddress = "0x3A3d22cB1dE38DF3819f0C41261EeaF0141d7871";
+        this.ContractAddress = "0x680E69174388dC802903ac5542c1A4C7b6307c0f";
         this.ContractABI = ContractJSON.output.abi;
         console.log(this.ContractABI);
 
@@ -68,7 +68,10 @@ export default class Mint extends Component {
             return;
         }
 
-        let TransactionHash = await this.Contract.methods.MakeCoffee(To).send ({
+        let TransactionHash = await this.Contract.methods.MakeCoffee (
+            To,
+            "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
+        ).send ({
             from: FirstAddress
         }).catch(Error => console.error(Error.message));
 
@@ -76,7 +79,7 @@ export default class Mint extends Component {
             console.log("Transaction failed");
             return;
         }
-          
+        
         console.log(TransactionHash.transactionHash);
         return;
     }
