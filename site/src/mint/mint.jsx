@@ -17,7 +17,7 @@ export default class Mint extends Component {
     }
 
     async componentDidMount() {
-        this.ContractAddress = "0xb6719D7e56341aAEF32aD3d5ECF071C432527140";
+        this.ContractAddress = "0x3A3d22cB1dE38DF3819f0C41261EeaF0141d7871";
         this.ContractABI = ContractJSON.output.abi;
         console.log(this.ContractABI);
 
