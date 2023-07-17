@@ -1,6 +1,9 @@
 import { Component } from "react";
-import { SiBuymeacoffee } from "react-icons/si"
+import { SiBuymeacoffee } from "react-icons/si";
+import ContractJSON from "./MintContractABI.json";
+import Web3 from "web3";
 import "./mint.css";
+
 
 export default class Mint extends Component {
     constructor(props) {
@@ -11,6 +14,20 @@ export default class Mint extends Component {
             Message: null,
             To: null,
         };
+    }
+
+    async componentDidMount() {
+        this.ContractAddress = "0xb6719D7e56341aAEF32aD3d5ECF071C432527140";
+        this.ContractABI = ContractJSON.output.abi;
+        console.log(this.ContractABI);
+
+        const web3 = new Web3(window.ethereum);
+
+        this.Contract = new web3.eth.Contract (
+            this.ContractABI,
+            this.ContractAddress
+        );
+        this.web3 = web3;
     }
 
     async SetErrorMessage(Message) {
@@ -24,8 +41,8 @@ export default class Mint extends Component {
     }
 
     async ClickHandler() {
-        let {FirstAddress, Message, To} = this.state;
-        console.log(`Preparing transaction with args: ${FirstAddress} ${Message} ${To}`);
+        let {FirstAddress, To} = this.state;
+        console.log(`Preparing transaction with args: ${FirstAddress} ${To}`);
 
         if(FirstAddress === null || FirstAddress === undefined) {
             let ErrorMessage = `From is ${FirstAddress}`;
@@ -45,20 +62,22 @@ export default class Mint extends Component {
             return;
         }
 
-        To = Number(To, 10);
-        if(isNaN(To)) {
-            let ErrorMessage = `To is not a number`;
-            await this.SetErrorMessage(ErrorMessage);
-            return;
-        }
-
         if(FirstAddress.length !== 42) {
             let ErrorMessage = `From has invalid len ${FirstAddress.lengt}`;
             await this.SetErrorMessage(ErrorMessage);
             return;
         }
 
-        
+        let TransactionHash = await this.Contract.methods.MakeCoffee(To).send ({
+            from: FirstAddress
+        }).catch(Error => console.error(Error.message));
+
+        if(TransactionHash === null || TransactionHash === undefined) {
+            console.log("Transaction failed");
+            return;
+        }
+          
+        console.log(TransactionHash.transactionHash);
         return;
     }
 
@@ -69,12 +88,6 @@ export default class Mint extends Component {
                     <input className = "InputField" placeholder = "To" onChange = {Event => {
                         this.setState ({
                             ...this.state, To: Event.target.value
-                        });
-                    }} />
-                    <span className = "Border" />
-                    <input className = "InputField" placeholder = "Message" onChange = {Event => {
-                        this.setState ({
-                            ...this.state, Message: Event.target.value
                         });
                     }} />
                 </div>

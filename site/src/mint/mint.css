@@ -16,7 +16,7 @@
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
-    height: 30%;
+    height: 16%;
 
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -24,19 +24,11 @@
     outline: none;
     border: none;
     
-    padding-top: 4px;
-    padding-bottom: 4px;
     background-color: white;
     border: none;
     border-radius: 12px;
     padding-left: 16px;
     padding-right: 16px;
-}
-
-.Border {
-    border-bottom: 1px solid rgb(175, 175, 175);
-    margin-bottom: 4px;
-    width: 100%;
 }
 
 .Button {
