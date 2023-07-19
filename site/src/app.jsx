@@ -74,18 +74,13 @@ export default class App extends Component {
         }, 1000);
     }
 
-    async SetSuccessProps() {
-        let {InjectedProvider, MenuLink, URL, Accounts, ChainID, BuyCoffee} = this.state;
+    async SetProps(Mode) {
+        console.log(`Props are: ${Mode} ${typeof Mode}`);
+        this.setState ({...this.state, SuccessProps: Mode });
+    }
 
-        this.setState ({
-            MenuLink: MenuLink,
-            InjectedProvider: InjectedProvider,
-            ChainID: ChainID,
-            URL: URL,
-            BuyCoffee: BuyCoffee,
-            Accounts: Accounts,
-            SuccessProps: true
-        });
+    async SetSuccessProps() {
+        this.setState ({...this.state, SuccessProps: true });
     }
 
     async SetBuyCoffee() {
@@ -103,7 +98,7 @@ export default class App extends Component {
                 <div>
                     <h1 className = "Logotype">Bridge Provider</h1>
                 </div>
-                {
+                {/* {
                     InjectedProvider ? (
                         SuccessProps ? <Menu URL = {URL}/> : (
                             BuyCoffee ? <Mint FirstAddress = {Accounts[0]}/> : (
@@ -120,7 +115,8 @@ export default class App extends Component {
                             <Swap SetBuyCoffee = {this.SetBuyCoffee.bind(this)} SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {null} InjectedProvider = {InjectedProvider} ChainID = {111111}/>
                         </>
                     )
-                }
+                } */}
+                <Menu URL = {URL} SetProps = {this.SetProps.bind(this)}/>
             </div>
         );
     }

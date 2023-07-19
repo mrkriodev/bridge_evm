@@ -11,6 +11,16 @@ export default class Table extends Component {
         const {Items, ChainID} = this.props;
         const SberLogo = <img src = {Sber} alt = "Sber logo" width = "20px" height = "20px" />;
 
+        // {
+        //     "status": false,
+        //     "signs": 0,
+        //     "direction": 1,
+        //     "amount": 1123,
+        //     "address": "",
+        //     "hash_to": "",
+        //     "hash_from": ""
+        // }
+
         return (
             <table>
                 <thead>

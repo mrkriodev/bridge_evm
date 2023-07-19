@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { BsFillArrowLeftSquareFill } from "react-icons/bs";
 import Table from "./table";
 
 import "./menu.css";
@@ -9,6 +10,10 @@ const SortBy = [
     "Accending Amount",
     "Discending Amount"
 ];
+
+let PagesCount = 13;
+let CurrentPage = 5;
+let ChangedByFinder = false;
 
 let CachedItems;
 let CachedKey;
@@ -143,11 +148,24 @@ export default class Menu extends Component {
         });
     }
 
+    GenerateArray(From, To) {
+        let Result = Array.from({length: To - From});
+
+        for(let Iter = From; Iter < To; Iter += 1) {
+            Result[Iter - From] = Iter;
+        }
+        return Result;
+    }
+
     render() {
         return (
             <div className = "Menu">
                 <div className = "Header">
                     <div className = "LeftSide">
+                        <button onClick = {() => {
+                            this.props.SetProps(false);
+                            console.log("button");
+                        }}><BsFillArrowLeftSquareFill/> Back</button>
                         <button onClick = {this.RefreshTransactions.bind(this, this.state.URL)}>All Records</button>
                         <button onClick = {this.FilterPendingTransactions.bind(this)}>Pending</button>
                     </div>
@@ -164,7 +182,96 @@ export default class Menu extends Component {
                         </div>
                     </div>
                 </div>
-                <Table Items = {this.state.Items} ChainID = {this.props.ChainID}/>
+                <Table Items = {this.state.Items} ChainID = {this.props.ChainID} CurrentPage = {CurrentPage}/>
+                <div className = "BottomMenu">
+                    <div className = "FindSpecific">
+                        <input placeholder = "find specific" type = "number" onChange = {(Event) => {
+                            let Value = Event.target.value;
+
+                            if(Value.length === 0) { 
+                                return;
+                            }
+                            
+                            if(typeof Value === "string") {
+                                Value = Number(Value, 10);
+                            }
+
+                            if(Value > PagesCount) {
+                                CurrentPage = PagesCount;
+                                return;
+                            }
+
+                            if(Value < 0) {
+                                CurrentPage = 1;
+                                return;
+                            }
+
+                            CurrentPage = Value;
+                            ChangedByFinder = true;
+                        }}/>
+                    </div>
+
+                    <div className = "EnumeratedPages">
+                        <button onClick = {() => {
+                            CurrentPage = 1;
+                            ChangedByFinder = false;
+                        }} className = "ButtonFirstLastPage">first</button>
+                        {
+                            !ChangedByFinder ? (
+                                (PagesCount - CurrentPage + 1) > 6 ? (
+                                    this.GenerateArray(CurrentPage, PagesCount + 1).map(Item => {
+                                        if(Item === PagesCount) {
+                                            return <button onClick = {() => {
+                                                CurrentPage = Item;
+                                                ChangedByFinder = false;
+                                            }} className = "PageItem">{Item}</button>;
+                                        }
+                                        if(Item === PagesCount - 3) {
+                                            return <p>...,&nbsp;</p>;
+                                        }
+
+                                        else if(Item < CurrentPage + 3) {
+                                            return <button onClick = {() => {
+                                                CurrentPage = Item;
+                                                ChangedByFinder = false;
+                                            }} className = "PageItem">{Item},&nbsp;</button>;
+                                        }
+                                        else if(Item > PagesCount - 3) {
+                                            return <button onClick = {() => {
+                                                CurrentPage = Item;
+                                                ChangedByFinder = false;
+                                            }} className = "PageItem">{Item},&nbsp;</button>;
+                                        }
+                                    })
+                                ) : (
+                                    this.GenerateArray(CurrentPage, PagesCount + 1).map(Item => {
+                                        if(Item === PagesCount) {
+                                            return <button onClick = {() => {
+                                                CurrentPage = Item;
+                                                ChangedByFinder = false;
+                                            }} className = "PageItem">{Item}</button>;
+                                        }
+                                        else {
+                                            return <button onClick = {() => {
+                                                CurrentPage = Item;
+                                                ChangedByFinder = false;
+                                            }} className = "PageItem">{Item},&nbsp;</button>;
+                                        }
+                                    })
+                                )
+                            ) : (
+                                <button onClick = {() => {
+                                    CurrentPage = CurrentPage;
+                                    ChangedByFinder = true;
+                                }} className = "PageItem">{CurrentPage}</button>
+                            )
+                        }
+                        <button onClick = {() => {
+                            CurrentPage = PagesCount;
+                            ChangedByFinder = false;
+                        }} className = "ButtonFirstLastPage">last</button>
+                    </div>
+                </div>
             </div>
         );
     }
