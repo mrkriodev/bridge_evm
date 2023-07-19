@@ -165,7 +165,7 @@ export default class Menu extends Component {
                         <button onClick = {() => {
                             this.props.SetProps(false);
                             console.log("button");
-                        }}><BsFillArrowLeftSquareFill/> Back</button>
+                        }} className = "BackButton"><BsFillArrowLeftSquareFill className = "ArrowMarginer"/> Back</button>
                         <button onClick = {this.RefreshTransactions.bind(this, this.state.URL)}>All Records</button>
                         <button onClick = {this.FilterPendingTransactions.bind(this)}>Pending</button>
                     </div>

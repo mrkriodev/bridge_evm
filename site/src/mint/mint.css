@@ -11,6 +11,41 @@
     border-radius: 12px;
 }
 
+.BottomMintButtons {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.MintBackButton {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+
+    border: none;
+    cursor: pointer;
+    margin-top: 12px;
+
+    background-color: rgb(157, 53, 254);
+    color: white;
+    font-weight: 700;
+
+    padding: 8px 8px 8px 8px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.MintBackButton:hover {
+    background-color: white;
+    color: rgb(157, 53, 254);
+}
+
+.ArrowMarginer {
+    margin-right: 4px;
+}
+
 .__InputFields {
     display: flex;
     align-items: center;
@@ -29,6 +64,7 @@
     border-radius: 12px;
     padding-left: 16px;
     padding-right: 16px;
+    margin-top: 16px;
 }
 
 .Button {

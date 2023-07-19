@@ -98,10 +98,12 @@ export default class App extends Component {
                 <div>
                     <h1 className = "Logotype">Bridge Provider</h1>
                 </div>
-                {/* {
+                {
                     InjectedProvider ? (
-                        SuccessProps ? <Menu URL = {URL}/> : (
-                            BuyCoffee ? <Mint FirstAddress = {Accounts[0]}/> : (
+                        SuccessProps ? <Menu URL = {URL} SetProps = {this.SetProps.bind(this)}/> : (
+                            BuyCoffee ? <Mint FirstAddress = {Accounts[0]} SetCoffee = {Mode => {
+                                this.setState({...this.state, BuyCoffee: Mode});
+                            }}/> : (
                                 <>
                                     <img src = {Sber} height ="120px" width ="120px" alt = "Sber logo"/>
                                     <Swap SetBuyCoffee = {this.SetBuyCoffee.bind(this)} SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {Accounts[0]} InjectedProvider = {InjectedProvider} ChainID = {Number(ChainID, 10)}/>
@@ -109,14 +111,13 @@ export default class App extends Component {
                             )
                         )
                     ) :
-                    SuccessProps ? <Menu URL = {URL}/> : (
+                    SuccessProps ? <Menu URL = {URL} SetProps = {this.SetProps.bind(this)}/> : (
                         <>
                             <img src = {Sber} height ="120px" width ="120px" alt = "Sber logo"/>
                             <Swap SetBuyCoffee = {this.SetBuyCoffee.bind(this)} SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {null} InjectedProvider = {InjectedProvider} ChainID = {111111}/>
                         </>
                     )
-                } */}
-                <Menu URL = {URL} SetProps = {this.SetProps.bind(this)}/>
+                }
             </div>
         );
     }

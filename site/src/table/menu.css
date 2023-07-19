@@ -5,6 +5,17 @@
     justify-content: center;
 }
 
+.BackButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.ArrowMarginer {
+    margin-right: 4px;
+}
+
 .BottomMenu {
     display: flex;
     flex-direction: row;

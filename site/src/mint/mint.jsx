@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { SiBuymeacoffee } from "react-icons/si";
+import { BsFillArrowLeftSquareFill } from "react-icons/bs";
 import ContractJSON from "./MintContractABI.json";
 import Web3 from "web3";
 import "./mint.css";
@@ -94,7 +95,12 @@ export default class Mint extends Component {
                         });
                     }} />
                 </div>
-                <button onClick = {this.ClickHandler.bind(this)} className = "Button">Buy me a Coffee<SiBuymeacoffee className = "Coffee" /></button>
+                <div className = "BottomMintButtons">
+                    <button onClick = {this.ClickHandler.bind(this)} className = "Button">Buy me a Coffee<SiBuymeacoffee className = "Coffee" /></button>
+                    <button className = "MintBackButton" onClick = {() => {
+                        this.props.SetCoffee(false);
+                    }}><BsFillArrowLeftSquareFill className = "ArrowMarginer"/> Back</button>
+                </div>
             </div>
         );
     }
