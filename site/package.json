@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "REACT_APP_API_ADDRESS=\"http://92.255.109.253:8081/api/status\" react-scripts build",
+    "build": "REACT_APP_API_ADDRESS=\"http://92.255.109.253:8081\" react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

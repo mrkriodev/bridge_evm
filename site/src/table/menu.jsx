@@ -12,7 +12,6 @@ const SortBy = [
 ];
 
 let PagesCount = 13;
-let CurrentPage = 5;
 let ChangedByFinder = false;
 
 let CachedItems;
@@ -23,6 +22,7 @@ export default class Menu extends Component {
         super(props);
 
         this.state = {
+            CurrentPage: 1,
             URL: props.URL,
             IsValid: false,
             Items: null,
@@ -31,121 +31,29 @@ export default class Menu extends Component {
         this.Sorted = [];
     }
 
-    async RefreshTransactions(URL) {
-        fetch(URL)
-        .then(data => data.json())
-        .then(data => {
-            this.setState({
-                URL: URL,
-                IsValid: true,
-                Items: data,
-                Error: null
-            });
-
-            CachedItems = {
-                URL: URL,
-                IsValid: true,
-                Items: data,
-                Error: null
-            };
-        })
-        .catch(error => {
-            console.log(error);
-
-            if(CachedItems == null) {
-                return;
-            }
-            let {__URL, __IsValid, __Items, __Error} = CachedItems;
-
-            this.setState ({
-                URL: __URL,
-                IsValid: __IsValid,
-                Items: __Items,
-                Error: __Error
-            });
-        });
-
-        return;
-    }
-
     async componentDidMount() {
         const {URL} = this.state;
-        await this.RefreshTransactions(URL);
-    }
-    
-    async FilterPendingTransactions() {
-        let {URL, Items, Error} = this.state;
-        if(Items == null && Error != null) {
-            this.setState ({
-                URL: URL,
-                Items: CachedItems,
-                Error: null
-            });
-        }
+        let CachedItems = [
+            {success: false},
+            {success: true}
+        ];
 
-        if(Items == null) {
-            return;
-        }
-
-        Items = Items.filter(Item => Item.Status.toLowerCase() !== "pending");
-
-        this.setState({
-            URL: URL,
-            Items: Items,
-            Error: null
-        });
+        this.setState ({ ...this.state, Items: CachedItems });
     }
 
-    async SortByTransactions(__key) {
-        if(__key === CachedKey) {
-            return;
-        }
-        CachedKey = __key;
+    /*Fetch Data from specific page*/
+    async GetPageItems(Page) {
 
-        let {URL, Items} = this.state;
-        if(Items == null && Error != null) {
-            this.setState ({
-                URL: URL,
-                Items: CachedItems,
-                Error: null
-            });
-        }
+    }
 
-        if(Items == null) {
-            return;
-        }
+    /*Get Status of specific tr-n*/
+    async GetItem(Number) {
 
-        switch(__key) {
-            case 0:
-                console.log("ID");
-                Items.sort((first, second) => {
-                    return first.ID - second.ID;
-                })
-                break;
+    }
 
-            case 1:
-                console.log("Accending Amount");
-                Items.sort((first, second) => {
-                    return first.Amount - second.Amount;
-                });
-                break;
-
-            case 2:
-                console.log("Discending Amount");
-                Items.sort((first, second) => {
-                    return second.Amount - first.Amount;
-                });
-                break;
-
-            default:
-                console.log("unknown type of sort");
-        }
-
-        this.setState({
-            URL: URL,
-            Items: Items,
-            Error: null,
-        });
+    /*Get Total count of tr-s*/
+    async GetTotal() {
+        
     }
 
     GenerateArray(From, To) {
@@ -158,6 +66,8 @@ export default class Menu extends Component {
     }
 
     render() {
+        let {CurrentPage} = this.state;
+
         return (
             <div className = "Menu">
                 <div className = "Header">
@@ -166,23 +76,24 @@ export default class Menu extends Component {
                             this.props.SetProps(false);
                             console.log("button");
                         }} className = "BackButton"><BsFillArrowLeftSquareFill className = "ArrowMarginer"/> Back</button>
-                        <button onClick = {this.RefreshTransactions.bind(this, this.state.URL)}>All Records</button>
-                        <button onClick = {this.FilterPendingTransactions.bind(this)}>Pending</button>
+                        <button>All Records</button>
+                        <button>Pending</button>
                     </div>
                     <div className = "RightSize">
                         <div className = "SortBy">
                             <button className = "MenuTitle">Sort By</button>
                             <ul className = "MenuDropDown">
                                 {
+                                    /*Implement sorting*/
                                     SortBy.map((value, key) => {
-                                        return <button onClick = {this.SortByTransactions.bind(this, key)} key = {key} className = "SortByElement">{value}</button>
+                                        return <button key = {key} className = "SortByElement">{value}</button>
                                     })
                                 }
                             </ul>
                         </div>
                     </div>
                 </div>
-                <Table Items = {this.state.Items} ChainID = {this.props.ChainID} CurrentPage = {CurrentPage}/>
+                <Table Items = {this.state.Items} ChainID = {this.props.ChainID}/>
                 <div className = "BottomMenu">
                     <div className = "FindSpecific">
                         <input placeholder = "find specific" type = "number" onChange = {(Event) => {
@@ -197,23 +108,23 @@ export default class Menu extends Component {
                             }
 
                             if(Value > PagesCount) {
-                                CurrentPage = PagesCount;
+                                this.setState({...this.state, CurrentPage: PagesCount});
                                 return;
                             }
 
                             if(Value < 0) {
-                                CurrentPage = 1;
+                                this.setState({...this.state, CurrentPage: 1});
                                 return;
                             }
 
-                            CurrentPage = Value;
+                            this.setState({...this.state, CurrentPage: Value});
                             ChangedByFinder = true;
                         }}/>
                     </div>
 
                     <div className = "EnumeratedPages">
                         <button onClick = {() => {
-                            CurrentPage = 1;
+                            this.setState({...this.state, CurrentPage: 1});
                             ChangedByFinder = false;
                         }} className = "ButtonFirstLastPage">first</button>
                         {
@@ -222,7 +133,7 @@ export default class Menu extends Component {
                                     this.GenerateArray(CurrentPage, PagesCount + 1).map(Item => {
                                         if(Item === PagesCount) {
                                             return <button onClick = {() => {
-                                                CurrentPage = Item;
+                                                this.setState({...this.state, CurrentPage: Item});
                                                 ChangedByFinder = false;
                                             }} className = "PageItem">{Item}</button>;
                                         }
@@ -232,28 +143,30 @@ export default class Menu extends Component {
 
                                         else if(Item < CurrentPage + 3) {
                                             return <button onClick = {() => {
-                                                CurrentPage = Item;
+                                                this.setState({...this.state, CurrentPage: Item});
                                                 ChangedByFinder = false;
                                             }} className = "PageItem">{Item},&nbsp;</button>;
                                         }
                                         else if(Item > PagesCount - 3) {
                                             return <button onClick = {() => {
-                                                CurrentPage = Item;
+                                                this.setState({...this.state, CurrentPage: Item});
                                                 ChangedByFinder = false;
                                             }} className = "PageItem">{Item},&nbsp;</button>;
                                         }
+
+                                        return;
                                     })
                                 ) : (
                                     this.GenerateArray(CurrentPage, PagesCount + 1).map(Item => {
                                         if(Item === PagesCount) {
                                             return <button onClick = {() => {
-                                                CurrentPage = Item;
+                                                this.setState({...this.state, CurrentPage: Item});
                                                 ChangedByFinder = false;
                                             }} className = "PageItem">{Item}</button>;
                                         }
                                         else {
                                             return <button onClick = {() => {
-                                                CurrentPage = Item;
+                                                this.setState({...this.state, CurrentPage: Item});
                                                 ChangedByFinder = false;
                                             }} className = "PageItem">{Item},&nbsp;</button>;
                                         }
@@ -261,13 +174,12 @@ export default class Menu extends Component {
                                 )
                             ) : (
                                 <button onClick = {() => {
-                                    CurrentPage = CurrentPage;
                                     ChangedByFinder = true;
                                 }} className = "PageItem">{CurrentPage}</button>
                             )
                         }
                         <button onClick = {() => {
-                            CurrentPage = PagesCount;
+                            this.setState({...this.state, CurrentPage: PagesCount});
                             ChangedByFinder = false;
                         }} className = "ButtonFirstLastPage">last</button>
                     </div>
