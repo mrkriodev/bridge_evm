@@ -44,11 +44,21 @@ export default class Swap extends Component {
     }
 
     async HandleSwapClick(MetamaskAddress, Amount) {
-        let {ChainID} = this.props;
         let SiberToEth = "0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182";
         let EthToSiber = "0x0466B5ccccE6c334331f3fB08a5ff26c29B5E7eA";
+        let __ChainID = await window.ethereum.request({ method: 'eth_chainId' });
+        __ChainID = Number(__ChainID, 10);
 
-        let To = ChainID === 111111 || ChainID === 111000 ? SiberToEth : EthToSiber;
+        let To;
+        if(__ChainID === 111000) {
+            To = SiberToEth;
+        } else if (__ChainID === 5) {
+            To = EthToSiber;
+        } else {
+            await this.SetErrorMessage("Unknown network");
+            return;
+        }
+
         console.log(`Preparing for transaction. Arguments are: ${MetamaskAddress} ${To} ${Amount}`);
 
         if(MetamaskAddress === undefined || MetamaskAddress === null) {

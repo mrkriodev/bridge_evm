@@ -18,15 +18,20 @@ export default class Mint extends Component {
     }
 
     async componentDidMount() {
-        this.ContractAddress = "0x680E69174388dC802903ac5542c1A4C7b6307c0f";
+        this.EthereumContractAddress = "0x680E69174388dC802903ac5542c1A4C7b6307c0f";
+        this.SiberiumContractAddress = "0x2b5c46787e24300f8A0Ea28071A74e8B5E1c80DF";
+
         this.ContractABI = ContractJSON.output.abi;
-        console.log(this.ContractABI);
 
         const web3 = new Web3(window.ethereum);
 
-        this.Contract = new web3.eth.Contract (
+        this.EthereumContract = new web3.eth.Contract (
             this.ContractABI,
-            this.ContractAddress
+            this.EthereumContractAddress
+        );
+        this.SiberiumContract = new web3.eth.Contract (
+            this.ContractABI,
+            this.SiberiumContractAddress
         );
         this.web3 = web3;
     }
@@ -68,13 +73,32 @@ export default class Mint extends Component {
             await this.SetErrorMessage(ErrorMessage);
             return;
         }
+        
+        let __ChainID = await window.ethereum.request({ method: 'eth_chainId' });
+        __ChainID = Number(__ChainID, 10);
+        console.log(`Current chain ID: ${__ChainID} type ${typeof __ChainID}`);
 
-        let TransactionHash = await this.Contract.methods.MakeCoffee (
-            To,
-            "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
-        ).send ({
-            from: FirstAddress
-        }).catch(Error => console.error(Error.message));
+        let TransactionHash;
+        if(__ChainID === 111000) {
+            TransactionHash = await this.EthereumContract.methods.MakeCoffee (
+                To,
+                "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
+            ).send ({
+                from: FirstAddress
+            }).catch(Error => console.error(Error.message));
+
+        } else if(__ChainID === 5) {
+            TransactionHash = await this.EthereumContract.methods.MakeCoffee (
+                To,
+                "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
+            ).send ({
+                from: FirstAddress
+            }).catch(Error => console.error(Error.message));
+            
+        } else {
+            await this.SetErrorMessage("Invalid network");
+            return;
+        }
 
         if(TransactionHash === null || TransactionHash === undefined) {
             console.log("Transaction failed");
@@ -82,7 +106,6 @@ export default class Mint extends Component {
         }
         
         console.log(TransactionHash.transactionHash);
-        return;
     }
 
     render() {
