@@ -19,7 +19,7 @@ export default class Mint extends Component {
 
     async componentDidMount() {
         this.EthereumContractAddress = "0x680E69174388dC802903ac5542c1A4C7b6307c0f";
-        this.SiberiumContractAddress = "0x2b5c46787e24300f8A0Ea28071A74e8B5E1c80DF";
+        this.SiberiumContractAddress = "0x058677bA0031B3E66D81bcbBd3f94b616e6F6809";
 
         this.ContractABI = ContractJSON.output.abi;
 
@@ -80,6 +80,17 @@ export default class Mint extends Component {
 
         let TransactionHash;
         if(__ChainID === 111000) {
+            console.log("Interacting with Siberium");
+            TransactionHash = await this.SiberiumContract.methods.MakeCoffee (
+                To,
+                "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
+            ).send ({
+                from: FirstAddress
+            }).catch(Error => console.error(Error.message));
+            // 0xade657554299E886Fb0150d4293D441f278A9854
+            console.log("Tr-n completed");
+        } else if(__ChainID === 5) {
+            console.log("Interacting with Goerli");
             TransactionHash = await this.EthereumContract.methods.MakeCoffee (
                 To,
                 "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
@@ -87,14 +98,7 @@ export default class Mint extends Component {
                 from: FirstAddress
             }).catch(Error => console.error(Error.message));
 
-        } else if(__ChainID === 5) {
-            TransactionHash = await this.EthereumContract.methods.MakeCoffee (
-                To,
-                "https://ipfs.io/ipfs/QmVogCkh5ezJ9j68tXWcYVPGkWXQU9MBXbtN2h7Uxo5YGU?filename=coffee.json"
-            ).send ({
-                from: FirstAddress
-            }).catch(Error => console.error(Error.message));
-            
+            console.log("Tr-n completed");
         } else {
             await this.SetErrorMessage("Invalid network");
             return;

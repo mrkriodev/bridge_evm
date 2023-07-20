@@ -98,7 +98,7 @@ export default class App extends Component {
                 <div>
                     <h1 className = "Logotype">Bridge Provider</h1>
                 </div>
-                {/* {
+                {
                     InjectedProvider ? (
                         SuccessProps ? <Menu URL = {URL} SetProps = {this.SetProps.bind(this)}/> : (
                             BuyCoffee ? <Mint FirstAddress = {Accounts[0]} SetCoffee = {Mode => {
@@ -117,8 +117,8 @@ export default class App extends Component {
                             <Swap SetBuyCoffee = {this.SetBuyCoffee.bind(this)} SuccessProps = {this.SetSuccessProps.bind(this)} MetamaskAddress = {null} InjectedProvider = {InjectedProvider} ChainID = {111111}/>
                         </>
                     )
-                } */}
-                <Menu URL = {URL} />
+                }
+                {/* <Menu URL = {URL} /> */}
             </div>
         );
     }
