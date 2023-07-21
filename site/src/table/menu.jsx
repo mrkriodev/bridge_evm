@@ -11,11 +11,8 @@ const SortBy = [
     "Discending Amount"
 ];
 
-let PagesCount = 13;
+let PagesCount = 0;
 let ChangedByFinder = false;
-
-let CachedItems;
-let CachedKey;
 
 export default class Menu extends Component {
     constructor(props) {
@@ -47,14 +44,14 @@ export default class Menu extends Component {
         this.setState ({ ...this.state, Items: CachedItems });
 
         this.AutoRefreshingItems = setInterval(() => {
-                let {Items} = this.state;
+            let {Items} = this.state;
 
-                Items.forEach((value, key) => {
-                    if(value.status === false) {
-                        this.GetItem(CachedItems[key].id)
-                        .then(Result => value = Result);
-                    }
-                });
+            Items.forEach((value, key) => {
+                if(value.status === false) {
+                    this.GetItem(CachedItems[key].id)
+                    .then(Result => value = Result);
+                }
+            });
         }, 1000);
     }
 
