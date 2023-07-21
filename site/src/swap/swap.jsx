@@ -44,16 +44,43 @@ export default class Swap extends Component {
     }
 
     async HandleSwapClick(MetamaskAddress, Amount) {
-        let SiberToEth = "0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182";
-        let EthToSiber = "0x0466B5ccccE6c334331f3fB08a5ff26c29B5E7eA";
+        const SiberToEth = "0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182";
+        const EthToSiber = "0x0466B5ccccE6c334331f3fB08a5ff26c29B5E7eA";
         let __ChainID = await window.ethereum.request({ method: 'eth_chainId' });
+        let Image = <img src = {Sber} alt = "Sber logo" width = "20px" height = "20px" />;
         __ChainID = Number(__ChainID, 10);
 
         let To;
         if(__ChainID === 111000) {
             To = SiberToEth;
+
+            if(Amount < 0.001) {
+                await this.SetErrorMessage (
+                    <div className = "CommissionsItem">
+                        {Image}                    
+                        <BsFillArrowRightSquareFill className = "ColorGray"/>
+                        <FaEthereum />
+                        <p>requires min</p>
+                        <p>0.001</p>
+                    </div>
+                );
+                return;
+            }
         } else if (__ChainID === 5) {
             To = EthToSiber;
+
+            if(Amount < 0.09) {
+                await this.SetErrorMessage (
+                    <div className = "CommissionsItem">
+                        <FaEthereum />
+                        <BsFillArrowRightSquareFill className = "ColorGray"/>
+                        {Image}
+                        <p>requires min</p>
+                        <p>0.09</p>
+                    </div>
+                );
+                return;
+            }
         } else {
             await this.SetErrorMessage("Unknown network");
             return;
@@ -200,7 +227,7 @@ export default class Swap extends Component {
                             Amount: Event.target.value,
                             MetamaskAddress: MetamaskAddress
                         });
-                    }} value = {Amount === null ? "" : Amount} type = "number" placeholder = "Amount" className = "AmountInput" />
+                    }} value = {Amount === null ? "" : Amount} type = "number" placeholder = "Amount + 9%" className = "AmountInput" />
                 </div>
                 <p className = { Success ? "ErrorFieldGreen" : "ErrorFieldRed"} >{ErrorState}</p>
                 <div className = "AllButtons">
