@@ -6,19 +6,16 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@metamask/detect-provider": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@thirdweb-dev/react": "^3.14.15",
-    "@thirdweb-dev/sdk": "^3.10.35",
     "cors": "^2.8.5",
     "ethers": "^5.7.2",
     "hardhat": "^2.17.0",
-    "react": "^18.2.0",
+    "reac": "^0.0.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "redux": "^4.2.1",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^2.1.2",
     "web3": "^4.0.3"
   },
   "scripts": {
@@ -45,5 +42,17 @@
       "last 1 safari version"
     ],
     "proxy": "http://localhost:8080"
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.1"
   }
 }

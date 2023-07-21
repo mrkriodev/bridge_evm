@@ -54,14 +54,14 @@ export default class Swap extends Component {
         if(__ChainID === 111000) {
             To = SiberToEth;
 
-            if(Amount < 0.001) {
+            if(Amount < 0.03) {
                 await this.SetErrorMessage (
                     <div className = "CommissionsItem">
                         {Image}                    
                         <BsFillArrowRightSquareFill className = "ColorGray"/>
                         <FaEthereum />
                         <p>requires min</p>
-                        <p>0.001</p>
+                        <p>0.03</p>
                     </div>
                 );
                 return;
@@ -69,14 +69,14 @@ export default class Swap extends Component {
         } else if (__ChainID === 5) {
             To = EthToSiber;
 
-            if(Amount < 0.09) {
+            if(Amount < 0.1) {
                 await this.SetErrorMessage (
                     <div className = "CommissionsItem">
                         <FaEthereum />
                         <BsFillArrowRightSquareFill className = "ColorGray"/>
                         {Image}
                         <p>requires min</p>
-                        <p>0.09</p>
+                        <p>0.1</p>
                     </div>
                 );
                 return;
@@ -227,7 +227,7 @@ export default class Swap extends Component {
                             Amount: Event.target.value,
                             MetamaskAddress: MetamaskAddress
                         });
-                    }} value = {Amount === null ? "" : Amount} type = "number" placeholder = "Amount + 9%" className = "AmountInput" />
+                    }} value = {Amount === null ? "" : Amount} type = "number" placeholder = "Amount + 10%" className = "AmountInput" />
                 </div>
                 <p className = { Success ? "ErrorFieldGreen" : "ErrorFieldRed"} >{ErrorState}</p>
                 <div className = "AllButtons">

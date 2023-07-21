@@ -7,7 +7,16 @@ import Sber from "../img/sber.png";
 import "./table.css";
 
 export default class Table extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            GlobalKey: 1
+        };
+    }
+
     render() {
+        let {GlobalKey} = this.state;
         const {Items} = this.props;
         const SberLogo = <img src = {Sber} alt = "Sber logo" width = "20px" height = "20px" />;
 
@@ -25,18 +34,18 @@ export default class Table extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                {Items && Items.map((value, key) => {
+                {Items && Items.map(value => {
                     return (
-                        <tr key = {key}>
-                            <td key = {key}>{value.success === false ? <FcClock /> : <FcCheckmark />}</td>
-                            <td key = {key}><input className = "Field" value = {value.address} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value.hash_from} readOnly/></td>
+                        <tr key = {GlobalKey++}>
+                            <td key = {GlobalKey++}>{value.status === false ? <FcClock /> : <FcCheckmark />}</td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.address} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.hash_from} readOnly/></td>
                             {
-                                value.direction === 1 ? <td key = {key} className = "Arrow"><BsFillArrowLeftSquareFill/></td> : <td key = {key} className = "Arrow"><BsFillArrowRightSquareFill/></td>
+                                value.direction === 1 ? <td key = {GlobalKey++} className = "Arrow"><BsFillArrowLeftSquareFill/></td> : <td key = {GlobalKey++} className = "Arrow"><BsFillArrowRightSquareFill/></td>
                             }
-                            <td key = {key}><input className = "Field" value = {value.hash_to} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value.signs} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value.amount + " ETH"} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.hash_to} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.signs} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.amount + " ETH"} readOnly/></td>
                         </tr>
                     );
                 })}
