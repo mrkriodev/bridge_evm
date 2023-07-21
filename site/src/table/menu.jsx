@@ -28,7 +28,7 @@ export default class Menu extends Component {
             Items: null,
             Error: null
         };
-        this.AutoRefreshingItems = [];
+        this.AutoRefreshingItems = undefined;
     }
 
     async componentDidMount() {
@@ -46,23 +46,21 @@ export default class Menu extends Component {
         await this.StopRefreshingItems();
         this.setState ({ ...this.state, Items: CachedItems });
 
-        this.AutoRefreshingItems.push (
-            setInterval(() => {
-                    let {Items} = this.state;
+        this.AutoRefreshingItems = setInterval(() => {
+                let {Items} = this.state;
 
-                    Items.forEach((value, key) => {
-                        if(value.status === false) {
-                            this.GetItem(CachedItems[key].id)
-                            .then(Result => value = Result);
-                        }
-                    });
-                }, 1000)
-            );
+                Items.forEach((value, key) => {
+                    if(value.status === false) {
+                        this.GetItem(CachedItems[key].id)
+                        .then(Result => value = Result);
+                    }
+                });
+        }, 1000);
     }
 
     async StopRefreshingItems() {
-        for(let Iter in this.AutoRefreshingItems) {
-            clearInterval(this.AutoRefreshingItems[+Iter]);
+        if(this.AutoRefreshingItems !== undefined || this.AutoRefreshingItems !== null) {
+            clearInterval(this.AutoRefreshingItems);
         }
     }
 
@@ -179,9 +177,8 @@ export default class Menu extends Component {
             return;
         }
 
-        await this.StopRefreshingItems();
-
-        this.setState({...this.state, CurrentPage: Page, Items: await this.GetPageItems(Page)});
+        this.setState({...this.state, CurrentPage: Page});
+        await this.LaunchAutoRefreshing();
         ChangedByFinder = false;
     }
 
