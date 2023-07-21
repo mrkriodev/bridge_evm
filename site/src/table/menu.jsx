@@ -35,53 +35,39 @@ export default class Menu extends Component {
         await this.LaunchAutoRefreshing();
     }
 
-    async LaunchAutoRefreshing() {
-        let {CurrentPage} = this.state;
-        let CachedItems = await this.GetPageItems(CurrentPage);
-        
-        this.setState ({ ...this.state, Items: CachedItems });
-
-        for(let Iter in CachedItems) {
-            if(CachedItems[+Iter].status === false) {
-                this.AutoRefreshingItems.push ({
-                    Item:   setInterval(() => {
-                                let {Items} = this.state;
-
-                                Items.forEach((value, key) => {
-                                    if(value.status === false) {
-                                        this.GetItem(CachedItems[key].id)
-                                        .then(Result => value = Result);
-                                    }
-                                });
-                            }, 1000),
-                    ID: CachedItems[+Iter].id,
-                    Index: +Iter
-                });
-            }
-        }
-    }
-
-    async StopRefreshingItems() {
-        for(let Iter in this.AutoRefreshingItems) {
-            clearInterval(this.AutoRefreshingItems[Iter].Item);
-        }
-    }
-
     async componentWillUnmount() {
         await this.StopRefreshingItems();
     }
 
+    async LaunchAutoRefreshing() {
+        let {CurrentPage} = this.state;
+        let CachedItems = await this.GetPageItems(CurrentPage);
+        
+        await this.StopRefreshingItems();
+        this.setState ({ ...this.state, Items: CachedItems });
+
+        this.AutoRefreshingItems.push (
+            setInterval(() => {
+                    let {Items} = this.state;
+
+                    Items.forEach((value, key) => {
+                        if(value.status === false) {
+                            this.GetItem(CachedItems[key].id)
+                            .then(Result => value = Result);
+                        }
+                    });
+                }, 1000)
+            );
+    }
+
+    async StopRefreshingItems() {
+        for(let Iter in this.AutoRefreshingItems) {
+            clearInterval(this.AutoRefreshingItems[+Iter]);
+        }
+    }
+
     async FilterPending() {
         let {Items} = this.state;
-        let Indexes = [];
-
-        for(let Iter in this.AutoRefreshingItems) {
-            let Item = this.AutoRefreshingItems[+Iter];
-
-            Indexes.push(+Item.Index);
-            clearInterval(+Item.Item);
-        }
-        this.AutoRefreshingItems = [];
 
         let Iter = 0;
         while (Iter < Items.length) {
@@ -135,13 +121,13 @@ export default class Menu extends Component {
     async GetItem(ID) {
         if(ID === undefined || ID === null) {
             console.log(`ID is ${ID}`);
-            return [];
+            return null;
         }
         ID = Number(ID, 10);
 
         if(ID === undefined || ID === null) {
             console.log(`ID is ${ID}`);
-            return [];
+            return null;
         }
 
         let Item = await fetch (
@@ -155,7 +141,10 @@ export default class Menu extends Component {
             console.log(`Error, response ${Item === null || Item === undefined ? "is " + Item : "status is " + Item.status}`)
         }
 
-        return await Item.json();
+        let Result = await Item.json();
+        console.log(Result);
+
+        return Result;
     }
 
     /*Get Total count of tr-s*/

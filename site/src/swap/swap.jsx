@@ -26,21 +26,11 @@ export default class Swap extends Component {
 
     async SetErrorMessage(Message) {
         let {To, Amount, MetamaskAddress} = this.state;
-        this.setState ({
-            To: To,
-            Amount: Amount,
-            Success: false,
-            ErrorState: Message,
-            MetamaskAddress: MetamaskAddress
-        });
+        this.setState ({ ...this.state, Success: false,  ErrorState: Message });
         
-        setTimeout(this.setState.bind(this), 5000, {
-            To: To,
-            Amount: Amount,
-            Success: false,
-            ErrorState: null,
-            MetamaskAddress: MetamaskAddress
-        });
+        setTimeout(() => {
+            this.setState({ ...this.state, Success: false, ErrorState: null,});
+        }, 3000);
     }
 
     async HandleSwapClick(MetamaskAddress, Amount) {

@@ -24,19 +24,19 @@ export default class Table extends Component {
             <table>
                 <thead>
                     <tr>
-                        <td className = "TableHeaderName">Status</td>
-                        <td className = "TableHeaderName">Address</td>
-                        <td className = "TableHeaderName"><FaEthereum/></td>
+                        <td>Status</td>
+                        <td>Address</td>
+                        <td><FaEthereum/></td>
                         <td></td>
-                        <td className = "TableHeaderName">{SberLogo}</td>
-                        <td className = "TableHeaderName">Signs</td>
-                        <td className = "TableHeaderName">Amount</td>
+                        <td>{SberLogo}</td>
+                        <td>Signs</td>
+                        <td>Amount</td>
                     </tr>
                 </thead>
                 <tbody>
                 {Items && Items.map(value => {
                     return (
-                        <tr key = {GlobalKey++}>
+                        <tr key = {GlobalKey++} className = "TableRow">
                             <td key = {GlobalKey++}>{value.status === false ? <FcClock /> : <FcCheckmark />}</td>
                             <td key = {GlobalKey++}><input className = "Field" value = {value.address} readOnly/></td>
                             <td key = {GlobalKey++}><input className = "Field" value = {value.hash_from} readOnly/></td>
