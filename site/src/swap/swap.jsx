@@ -235,11 +235,19 @@ export default class Swap extends Component {
                         <button className = "ConnectMetamaskButton" onClick = {this.HandleMetamaskConnect.bind(this)} type = "button">Connect<GiFox/></button>
                         <button className = "SwapButton" onClick = {this.HandleSwapClick.bind(this, MetamaskAddress, Amount)} type = "button">Swap<FaEthereum/></button>
                     </div>
-                    <button onClick = {() => {
+                    <button onClick = {async() => {
                         if(MetamaskAddress === null || MetamaskAddress === undefined) {
                             let Message = `Invalid "From" address: ${MetamaskAddress}`;
                             console.log(Message);
                             this.SetErrorMessage(Message);
+                            return;
+                        }
+
+                        let __ChainID = await window.ethereum.request({ method: 'eth_chainId' });
+                        __ChainID = Number(__ChainID, 10);
+                        
+                        if(__ChainID !== 111000 && __ChainID !== 5) {
+                            await this.SetErrorMessage("Unknown network");
                             return;
                         }
                 

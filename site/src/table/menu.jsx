@@ -33,16 +33,21 @@ export default class Menu extends Component {
 
     async componentDidMount() {
         const {URL} = this.state;
-        let CachedItems = [
-            {success: false},
-            {success: true}
-        ];
+        let CachedItems = await this.GetPageItems(1);
 
         this.setState ({ ...this.state, Items: CachedItems });
     }
 
     /*Fetch Data from specific page*/
     async GetPageItems(Page) {
+        let Response = await fetch (
+            "http://92.255.109.253:9011/api/swaps/?limit=20",
+            {
+                method: "GET",
+            }
+        );
+        Response = Response.json();
+
 
     }
 
@@ -96,7 +101,7 @@ export default class Menu extends Component {
                 <Table Items = {this.state.Items} ChainID = {this.props.ChainID}/>
                 <div className = "BottomMenu">
                     <div className = "FindSpecific">
-                        <input placeholder = "find specific" type = "number" onChange = {(Event) => {
+                        <input placeholder = "Find Specific" type = "number" onChange = {(Event) => {
                             let Value = Event.target.value;
 
                             if(Value.length === 0) { 
