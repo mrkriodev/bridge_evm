@@ -2,18 +2,19 @@ import os
 import logging
 import time
 from web3 import Web3
-from compiled_contracts.goerli_wsibr_v8_minted_compiled import compiled_goerli_wsibr_v8
-from compiled_contracts.goerli_msw_issue_v4 import compiled_goerli_msw_issue_v4
-from compiled_contracts.sibr_weth_v8_compiled import compiled_sibr_weth_v8
-from compiled_contracts.sibr_msw_issue_v4 import compiled_sibr_msw_issue_v4
+from compiled_contracts.goerli_wsibr_v9 import compiled_goerli_wsibr_v9
+from compiled_contracts.goerli_msw_issue_v6 import compiled_goerli_msw_issue_v6
+
+from compiled_contracts.sibr_msw_issue_v6 import compiled_sibr_msw_issue_v6
+from compiled_contracts.sibr_weth_v9 import compiled_sibr_weth_v9
 
 logging.basicConfig(level=logging.DEBUG)
-IS_INFURA = False
-#infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
-infura_url = 'https://rpc.test.siberium.net'
+IS_INFURA = True
+infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
+#infura_url = 'https://rpc.test.siberium.net'
 first_adr = '0xade657554299E886Fb0150d4293D441f278A9854'
-second_adr = '0xc6322A3D73f791dFf977984F5380468885Beed77'
-third_adr = '0xe52FB548417eE451192200fdAf8Fa1511daB2300'
+second_adr = "0xc6322A3D73f791dFf977984F5380468885Beed77"
+third_adr = "0xe52FB548417eE451192200fdAf8Fa1511daB2300"
 fourth_adr = '0xCdf38647E1333C50Ec2F1104A25F88D16094D327'
 first_adr_pk = '62827a79fb937313b7d736e973f4ca8a33581650f153107de18114ef84a30347'
 second_adr_pk = '540884f10d684620077d6b90a65c1a256f3f00172df5635d73c99178c45950af'
@@ -25,6 +26,12 @@ adrs_pk = {
     third_adr: third_adr_pk,
     fourth_adr: fourth_adr_pk
 }
+#goerli_ms_sc_adr_test = '0x0466B5ccccE6c334331f3fB08a5ff26c29B5E7eA'
+#goerli_ms_sc_abi = '[{"inputs":[{"internalType":"address[]","name":"_owners","type":"address[]"},{"internalType":"uint256","name":"_numConfirmationsRequired","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"ConfirmTransaction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"balance","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"ExecuteTransaction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"issueIndex","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"IssueInited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"issueIndex","type":"uint256"}],"name":"IssueProvided","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"issueIndex","type":"uint256"}],"name":"IssueSigned","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"RevokeConfirmation","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":false,"internalType":"bytes","name":"data","type":"bytes"}],"name":"SubmitTransaction","type":"event"},{"inputs":[],"name":"WETHSTokenAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"confirmTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"executeTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_issueIndex","type":"uint256"}],"name":"getIssue","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bool","name":"provided","type":"bool"},{"internalType":"uint256","name":"numSigns","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getIssuesCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getOwners","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"getTransaction","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bool","name":"executed","type":"bool"},{"internalType":"uint256","name":"numConfirmations","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTransactionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"initIssue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"isConfirmed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"isSigned","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"issues","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bool","name":"provided","type":"bool"},{"internalType":"uint256","name":"numSigns","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"numConfirmationsRequired","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"numSignsRequired","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"owners","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_issueIndex","type":"uint256"}],"name":"provideIssue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"revokeConfirmation","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_issueIndex","type":"uint256"}],"name":"signIssue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"submitTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"transactions","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bool","name":"executed","type":"bool"},{"internalType":"uint256","name":"numConfirmations","type":"uint256"}],"stateMutability":"view","type":"function"},{"stateMutability":"payable","type":"receive"}]'
+
+#sibr_ms_sc_adr_test = "0x14DE0EAe16cFd97Eb19e4a97d82Dad72E02D6A8A"
+#sibr_ms_sc_abi = '[{"inputs":[{"internalType":"address[]","name":"_owners","type":"address[]"},{"internalType":"uint256","name":"_numConfirmationsRequired","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"ConfirmTransaction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"balance","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"ExecuteTransaction","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"issueIndex","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"IssueInited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"issueIndex","type":"uint256"}],"name":"IssueProvided","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"issueIndex","type":"uint256"}],"name":"IssueSigned","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"}],"name":"RevokeConfirmation","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint256","name":"txIndex","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":false,"internalType":"bytes","name":"data","type":"bytes"}],"name":"SubmitTransaction","type":"event"},{"inputs":[],"name":"WETHSTokenAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"confirmTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"executeTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_issueIndex","type":"uint256"}],"name":"getIssue","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bool","name":"provided","type":"bool"},{"internalType":"uint256","name":"numSigns","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getIssuesCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getOwners","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"getTransaction","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bool","name":"executed","type":"bool"},{"internalType":"uint256","name":"numConfirmations","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTransactionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"initIssue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"isConfirmed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"isSigned","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"issues","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bool","name":"provided","type":"bool"},{"internalType":"uint256","name":"numSigns","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"numConfirmationsRequired","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"numSignsRequired","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"owners","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_issueIndex","type":"uint256"}],"name":"provideIssue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txIndex","type":"uint256"}],"name":"revokeConfirmation","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_issueIndex","type":"uint256"}],"name":"signIssue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"submitTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"transactions","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bool","name":"executed","type":"bool"},{"internalType":"uint256","name":"numConfirmations","type":"uint256"}],"stateMutability":"view","type":"function"},{"stateMutability":"payable","type":"receive"}]'
+
 
 
 def standard_trx_build_for_sc_call_with_gas(base_adr=None) -> dict:
@@ -35,12 +42,14 @@ def standard_trx_build_for_sc_call_with_gas(base_adr=None) -> dict:
     build_trx_config = {
         'chainId': web3.eth.chain_id,
         'from': base_adr,
-        'gasPrice': web3.eth.gas_price,
-        'nonce': web3.eth.get_transaction_count(base_adr)
+        'nonce': web3.eth.get_transaction_count(base_adr),
+        # 'gasPrice': web3.eth.gas_price,
+        'maxFeePerGas': 30000000000,
+        'maxPriorityFeePerGas': 3000000000,
     }
-    gas_eddition = 0
+    gas_eddition = 1000
     if not IS_INFURA:
-        gas_eddition = 100000
+        gas_eddition = 10000
     gas = web3.eth.estimate_gas(build_trx_config) + gas_eddition
     build_trx_config['gas'] = gas + int(gas * 0.2)
 
@@ -200,10 +209,11 @@ def init_issue(sc_address, sc_abi):
     web3 = Web3(Web3.HTTPProvider(infura_url, request_kwargs={'timeout': 60}))
     contract = web3.eth.contract(address=web3.to_checksum_address(sc_address), abi=sc_abi)
     build_trx_config = standard_trx_build_for_sc_call_with_gas()
+    build_trx_config['gas'] *= 2
 
-    wei_value = web3.to_wei(0.0001, 'ether')
+    wei_value = web3.to_wei(0.006, 'ether')
 
-    f = contract.functions.initIssue(third_adr, int(wei_value))
+    f = contract.functions.initIssue(fourth_adr, int(wei_value))
     unsigned_tx = f.build_transaction(build_trx_config)
     signed_tx = web3.eth.account.sign_transaction(unsigned_tx, first_adr_pk)
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -300,12 +310,12 @@ def load_contract(cs):
         'gasPrice': web3.eth.gas_price,
         'nonce': web3.eth.get_transaction_count(first_adr)
     }
-    gas_eddition = 3000000
+    gas_eddition = 3200000
 
     gas = web3.eth.estimate_gas(build_trx_config) + gas_eddition
     build_trx_config['gas'] = gas
 
-    called_constructor = ctr.constructor([first_adr, second_adr], 2)
+    called_constructor = ctr.constructor([second_adr, third_adr], 2, 2)
     #called_constructor = ctr.constructor()
     # .buildTransaction(tx_dict)
     tx = called_constructor.build_transaction(build_trx_config)
@@ -319,10 +329,12 @@ def load_contract(cs):
     print(tx_receipt)
 
 
-def get_last_msw_issue(sc_address, sc_abi):
+def get_last_msw_issue(sc_address, sc_abi) -> int:
     web3 = Web3(Web3.HTTPProvider(infura_url, request_kwargs={'timeout': 60}))
     contract = web3.eth.contract(address=web3.to_checksum_address(sc_address), abi=sc_abi)
-    return contract.functions.getIssuesCount().call()
+    last_issue = contract.functions.getIssuesCount().call()
+    print(f"last issue = {last_issue}")
+    return int(last_issue)
 
 
 def make_transaction(from_adr=first_adr, to_adr=second_adr, value=0.0001):
@@ -334,15 +346,18 @@ def make_transaction(from_adr=first_adr, to_adr=second_adr, value=0.0001):
         'to': web3.to_checksum_address(to_adr),
         'nonce': web3.eth.get_transaction_count(from_adr),
         'value': web3.to_wei(value, 'ether'),
-        'gasPrice': web3.eth.gas_price,
+        #'gasPrice': web3.eth.gas_price,
+        'maxFeePerGas': 30000000000,
+        'maxPriorityFeePerGas': 3000000000,
     }
 
-    gas_eddition = 0
+    gas_eddition = 1000
     if not IS_INFURA:
         gas_eddition = 100000
 
     gas = web3.eth.estimate_gas(tx_dict) + gas_eddition
     tx_dict['gas'] = gas + int(gas*0.2)
+    #tx_dict['gasPrice'] += int(tx_dict['gasPrice']*0.1)
 
     signed_tx = web3.eth.account.sign_transaction(tx_dict, adrs_pk[from_adr])
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -369,37 +384,40 @@ def test():
     print("hello")
 
 
-sibr_weths_v8_adr = '0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182'
-sibr_msw_issuer_v4_adr = '0x14DE0EAe16cFd97Eb19e4a97d82Dad72E02D6A8A'
+#sibr_weths_v8_adr = '0x6d7e26774aB7cEf9EE9Ca55CB7BA5922605DD182'
+sibr_weths_v9_adr = "0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD"
+sibr_msw_issuer_v6_adr = "0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C"
 
-goerli_wsibr_v8_adr = '0xac2ff53d3329f0aa57a23daff393704dc4f30d7d'
-goerli_msw_issuer_v4_adr = '0xD9FeF2B97B52082711fBDF4fB99670E717e599c1'
-
+goerli_wsibr_v9_adr = '0xA72d39Ac1c5BB0abc1A044741947ACC44a23CCe5'
+goerli_msw_issuer_v6_adr = "0x013538B357A4c2CcdE81E2318e5cA0560c171C8e"
 
 if __name__ == '__main__':
     test()
-    #make_transaction(fourth_adr, first_adr, 0.09570947275)
-    c_sc = compiled_sibr_weth_v8
+    make_transaction(first_adr, goerli_msw_issuer_v6_adr, 0.007)
+    #make_transaction(first_adr, sibr_ms_sc_adr_test, 0.00003)
+    #c_sc = compiled_sibr_msw_issue_v4
+    #c_sc = compiled_sibr_weth_v9
     #c_sc = compiled_sibr_msw_issue_v4
     #c_sc = compiled_goerli_wsibr_v8
-    #c_sc = compiled_goerli_msw_issue_v4
+
+    c_sc = compiled_goerli_msw_issue_v6
     contract_id, contract_interface = c_sc.popitem()
-    #contract_id, contract_interface = c_sc.popitem()
+
+    contract_id, contract_interface = c_sc.popitem()
     abi = contract_interface['abi']
+
     #make_token_transfer(first_adr, second_adr, weths_v7_sc_adr, abi)
-    # init_issue(msw_issue_mint_v3_adr, abi)
-    # issue_num = get_last_msw_issue(msw_issue_mint_v3_adr, abi) - 1
-    # get_issue(issue_num, msw_issue_mint_v3_adr, abi)
+    init_issue(goerli_msw_issuer_v6_adr, abi)
+    #issue_num = get_last_msw_issue(goerli_ms_sc_adr_test, goerli_ms_sc_abi) - 1
+    #get_issue(1, goerli_ms_sc_adr_test, goerli_ms_sc_abi)
     # sign_issue(issue_num, first_adr, msw_issue_mint_v3_adr, abi)
     # sign_issue(issue_num, second_adr, msw_issue_mint_v3_adr, abi)
     # provide_issue(issue_num, first_adr, msw_issue_mint_v3_adr, abi)
     # get_issue(issue_num, msw_issue_mint_v3_adr, abi)
-    #get_owner_from_sc(sibr_weths_v8_adr, abi)
-    #set_owner_to_sc(sibr_msw_issuer_v4_adr, sibr_weths_v8_adr, abi)
-    #get_owner_from_sc(sibr_weths_v8_adr, abi)
+    #get_owner_from_sc(sibr_weths_v9_adr, abi)
+    #set_owner_to_sc(sibr_msw_issuer_v4_adr, sibr_weths_v9_adr, abi)
+    #get_owner_from_sc(sibr_weths_v9_adr, abi)
     #mint_tokens(weths_v7_sc_adr, abi)
-    #balance_of_adr_in_tokens(first_adr, weths_v7_sc_adr, abi)
-    #balance_of_adr_in_tokens(second_adr, weths_v7_sc_adr, abi)
     #balance_of_adr_in_tokens(third_adr, weths_v7_sc_adr, abi)
     #call_func_sc_confirm_trx(first_adr)
     #call_func_sc_confirm_trx(second_adr)

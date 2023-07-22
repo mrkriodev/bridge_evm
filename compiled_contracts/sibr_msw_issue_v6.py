@@ -4,17 +4,17 @@ from solcx import install_solc, compile_source
 solc_version = '0.8.17'
 install_solc(solc_version)
 
-compiled_sibr_msw_issue_v4 = compile_source(
+compiled_sibr_msw_issue_v6 = compile_source(
     '''
-// SPDX-License-Identifier: MIT
+    // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
 interface WrapCoinIface{
-  function mintAndTransfer(address recipient, uint amount) external;
+    function mintAndTransferIssue(address recipient, uint amount, uint issueIndex) external;
+    function revertWrapCoinsBack(address recipient, uint amount) external;
 }
 
-
-contract MSIssuer {
+contract MSIssuerV6 {
     event Deposit(address indexed sender, uint amount, uint balance);
     event SubmitTransaction(
         address indexed owner,
@@ -37,10 +37,13 @@ contract MSIssuer {
     //event RevokeSign(address indexed owner, uint indexed issueIndex);
     event IssueProvided(address indexed owner, uint indexed issueIndex);
 
-    address[] public owners;
-    mapping(address => bool) public isOwner;
+    address public provider;
+    address[] public guardians;
+    mapping(address => bool) public isGuardian;
     uint public numConfirmationsRequired;
     uint public numSignsRequired;
+    uint public issueRewardPercent = 5;
+    uint public signersRewardPercent = 4;
 
     struct Transaction {
         address to;
@@ -53,16 +56,17 @@ contract MSIssuer {
     struct Issue {
         address to;
         uint value;
+        uint signersReward;
         bool provided;
         uint numSigns;
     }
 
-    address public constant WrappedTokenAddress = address(0x5b4e84f636A51c248679Fa0e0019dBBbC0Be7082);
+    address public constant WrappedTokenAddress = address(0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD);
 
     // mapping from tx index => owner => bool
     mapping(uint => mapping(address => bool)) public isConfirmed;
 
-    // mapping from tx index => owner => bool
+    // mapping from issue index => owner => bool
     mapping(uint => mapping(address => bool)) public isSigned;
 
     Transaction[] public transactions;
@@ -70,7 +74,17 @@ contract MSIssuer {
     Issue[] public issues;
 
     modifier onlyOwner() {
-        require(isOwner[msg.sender], "not owner");
+        require(isGuardian[msg.sender], "not guardian");
+        _;
+    }
+
+    modifier onlyGuardian() {
+        require(isGuardian[msg.sender], "not guardian");
+        _;
+    }
+
+    modifier onlyProvider() {
+         require(msg.sender == provider, "not provider");
         _;
     }
 
@@ -104,32 +118,32 @@ contract MSIssuer {
         _;
     }
 
-    constructor(address[] memory _owners, uint _numConfirmationsRequired/*, uint _numSignsRequired*/) {
-        require(_owners.length > 0, "owners required");
+    constructor(address[] memory _guardians, uint _numConfirmationsRequired, uint _numSignsRequired) {
+        require(_guardians.length > 0, "guardians required");
         require(
             _numConfirmationsRequired > 0 &&
-                _numConfirmationsRequired <= _owners.length,
+                _numConfirmationsRequired <= _guardians.length,
             "invalid number of required confirmations"
         );
-        /*require(
+        require(
             _numSignsRequired > 0 &&
-                _numSignsRequired <= _owners.length,
+                _numSignsRequired <= _guardians.length,
             "invalid number of required signs"
-        );*/
+        );
+        
+        for (uint i = 0; i < _guardians.length; i++) {
+            address guardian = _guardians[i];
 
-        for (uint i = 0; i < _owners.length; i++) {
-            address owner = _owners[i];
+            require(guardian != address(0), "invalid guardian");
+            require(!isGuardian[guardian], "guardian not unique");
 
-            require(owner != address(0), "invalid owner");
-            require(!isOwner[owner], "owner not unique");
-
-            isOwner[owner] = true;
-            owners.push(owner);
+            isGuardian[guardian] = true;
+            guardians.push(guardian);
         }
 
+        provider = msg.sender;
         numConfirmationsRequired = _numConfirmationsRequired;
-        //numSignsRequired = _numSignsRequired;
-        numSignsRequired = _numConfirmationsRequired;
+        numSignsRequired = _numSignsRequired;
     }
 
     receive() external payable {
@@ -156,21 +170,31 @@ contract MSIssuer {
         emit SubmitTransaction(msg.sender, txIndex, _to, _value, _data);
     }
     
-    function initIssue(address _to, uint _value) public onlyOwner {
+    function initIssue(address _to, uint _value) public onlyProvider {
         // Generate the issueId.
         //issueId = bytes20(keccak256(_to, block.blockhash(block.number - 1)));
         uint issueIndex = issues.length;
         
+        // Reward the validator for signing a transaction
+        //uint issueRewardAmount = (_value * issueRewardPercent) / 100;
+        uint issueRewardAmount = 1000000000000000;
+        payable(msg.sender).transfer(issueRewardAmount);
+
+        //uint m_signersRewardAmount = ((_value-issueRewardAmount) * signersRewardPercent ) / 100;
+        uint m_signersRewardAmount = 2000000000000000;
+        uint toAdrValue = (_value-issueRewardAmount-m_signersRewardAmount);
+
         issues.push(
             Issue({
                 to: _to,
-                value: _value,
+                value: toAdrValue,
+                signersReward: m_signersRewardAmount,
                 provided: false,
                 numSigns: 0
             })
         );
 
-        emit IssueInited(msg.sender, issueIndex, _to, _value);
+        emit IssueInited(msg.sender, issueIndex, _to, toAdrValue);
     }
 
     function confirmTransaction(
@@ -183,7 +207,7 @@ contract MSIssuer {
         emit ConfirmTransaction(msg.sender, _txIndex);
     }
 
-    function signIssue(uint _issueIndex) public onlyOwner 
+    function signIssue(uint _issueIndex) public onlyGuardian
     issueExists(_issueIndex) notProvided(_issueIndex) notSigned(_issueIndex) {
         Issue storage issue = issues[_issueIndex];
         issue.numSigns += 1;
@@ -212,19 +236,29 @@ contract MSIssuer {
         emit ExecuteTransaction(msg.sender, _txIndex);
     }
 
-    function provideIssue(uint _issueIndex) public onlyOwner issueExists(_issueIndex) notProvided(_issueIndex) {
+    function provideIssue(uint _issueIndex) public onlyProvider issueExists(_issueIndex) notProvided(_issueIndex) {
         Issue storage issue = issues[_issueIndex];
-        require(issue.numSigns >= numSignsRequired, "cannot privede issue");
-        
-        callMintWETHS(issue.to, issue.value);
+        require(issue.numSigns >= numSignsRequired, "cannot provide issue");
+
+        uint needToPay = numSignsRequired;
+        for(uint i = 0; ((i < guardians.length) && (needToPay != 0)); i++)
+        {
+            address g_adr = guardians[i];
+            if(isSigned[_issueIndex][g_adr] == true) {
+                payable(g_adr).transfer(issue.signersReward/numSignsRequired);
+                needToPay -= 1;
+            }
+        }   
 
         issue.provided = true;
         emit IssueProvided(msg.sender, _issueIndex);
     }
 
-    function callMintWETHS(address _to, uint _value) internal {
+    // this function calls than Issue in SberNet is provided
+    function callMintWETH(address _to, uint _value, uint issueIndex) public onlyProvider {
+        // todo: also add signs from guardians
         WrapCoinIface WETHSTokenContract = WrapCoinIface(WrappedTokenAddress);
-        WETHSTokenContract.mintAndTransfer(_to, _value);
+        WETHSTokenContract.mintAndTransferIssue(_to, _value, issueIndex);
     }
 
     function revokeConfirmation(
@@ -241,7 +275,11 @@ contract MSIssuer {
     }
 
     function getOwners() public view returns (address[] memory) {
-        return owners;
+        return guardians;
+    }
+
+    function getGuardians() public view returns (address[] memory) {
+        return guardians;
     }
 
     function getTransactionCount() public view returns (uint) {

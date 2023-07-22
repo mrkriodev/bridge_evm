@@ -6,7 +6,7 @@ install_solc(solc_version)
 
 compiled_sibr_weth_v9 = compile_source(
     '''
-   // SPDX-License-Identifier: MIT
+    // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
 interface IERC20 {
@@ -125,8 +125,16 @@ contract WETHTokenV9 is IERC20, Ownable {
         return true;
     }
 
-    function mintAndTransfer(address recipient, uint amount, uint issueIndex) external onlyOwner {
+    function mintAndTransfer(address recipient, uint amount) external onlyOwner {
+        _mint(recipient, amount, 0);
+    }
+
+    function mintAndTransferIssue(address recipient, uint amount, uint issueIndex) external onlyOwner {
         _mint(recipient, amount, issueIndex);
+    }
+
+    function revertWrapCoinsBack(address recipient, uint amount) external onlyOwner {
+        _burn(amount, recipient);
     }
 
     //function _mint(uint amount) external {
@@ -138,29 +146,17 @@ contract WETHTokenV9 is IERC20, Ownable {
         //emit Transfer(address(0), recipient, amount);
     }
 
-    function _burn(uint amount) internal onlyOwner {
-        balanceOf[msg.sender] -= amount;
+    function _burn(uint amount, address adr) internal onlyOwner {
+        //balanceOf[msg.sender] -= amount;
+        balanceOf[adr] -= amount;
         totalSupply -= amount;
-        emit Transfer(msg.sender, address(0), amount);
+        emit Transfer(adr/*msg.sender*/, address(0), amount);
     }
 
     function setOwner(address msContract) external onlyOwner {
         _setOwner(msContract);
     }
-}
+}    
     ''',
     output_values=['abi', 'bin']
 )
-
-
-# def get_compiled_sc():
-#     p = Path(__file__).parents[1]
-#     sc_path = os.path.join(os.path.abspath(p.resolve()), "contracts", "weths_v1_minting.sol")
-#     print(sc_path)
-#
-#     sc_as_text = str()
-#     with open(sc_path, 'r') as file:
-#         sc_as_text = file.read()
-#
-#     input_str = sc_as_text
-#     return input_str

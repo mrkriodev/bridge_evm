@@ -4,7 +4,7 @@ from solcx import install_solc, compile_source
 solc_version = '0.8.17'
 install_solc(solc_version)
 
-compiled_sibr_msw_issue_v4 = compile_source(
+compiled_sibr_msw_issue_v4_test = compile_source(
     '''
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
@@ -57,7 +57,7 @@ contract MSIssuer {
         uint numSigns;
     }
 
-    address public constant WrappedTokenAddress = address(0x5b4e84f636A51c248679Fa0e0019dBBbC0Be7082);
+    address public constant WrappedTokenAddress = address(0);
 
     // mapping from tx index => owner => bool
     mapping(uint => mapping(address => bool)) public isConfirmed;
