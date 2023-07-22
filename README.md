@@ -6,7 +6,12 @@
 - Включенная в MetaMask сеть [Siberium](https://metaschool.so/rpc/siberiumTestNetwork) (тестнет)
 - Включенная в MetaMask сеть [Goerli](https://metaschool.so/rpc/goerli) (тестнет)
 - Наличие средств в обоих сетях
-- Работа с компьютера
+- Работа с компьютера - так как метамаск!
+
+### Структура репозитория
+- contracts содержит актуальные версии используемых контрактов
+- site - версию фронта до репозитория https://github.com/faust403/bridge_evm_front
+- compiled_contracts - контракты, скомпилированные питоном, чтобы руками грузить, когда сеть глючит
 
 ### Инструкция к использованию [моста](http://sber-bridge.ru)
 
