@@ -9,9 +9,9 @@ from compiled_contracts.sibr_msw_issue_v6 import compiled_sibr_msw_issue_v6
 from compiled_contracts.sibr_weth_v9 import compiled_sibr_weth_v9
 
 logging.basicConfig(level=logging.DEBUG)
-IS_INFURA = True
-infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
-#infura_url = 'https://rpc.test.siberium.net'
+#IS_INFURA = True
+#infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
+infura_url = 'https://rpc.test.siberium.net'
 first_adr = '0xade657554299E886Fb0150d4293D441f278A9854'
 second_adr = "0xc6322A3D73f791dFf977984F5380468885Beed77"
 third_adr = "0xe52FB548417eE451192200fdAf8Fa1511daB2300"
@@ -48,7 +48,7 @@ def standard_trx_build_for_sc_call_with_gas(base_adr=None) -> dict:
         'maxPriorityFeePerGas': 3000000000,
     }
     gas_eddition = 1000
-    if not IS_INFURA:
+    if infura_url.find("infura") != -1:
         gas_eddition = 10000
     gas = web3.eth.estimate_gas(build_trx_config) + gas_eddition
     build_trx_config['gas'] = gas + int(gas * 0.2)
@@ -233,6 +233,7 @@ def sign_issue(issue_num, adr_of_owner, sc_address, sc_abi):
     contract = web3.eth.contract(address=web3.to_checksum_address(sc_address), abi=sc_abi)
 
     build_trx_config = standard_trx_build_for_sc_call_with_gas(adr_of_owner)
+    build_trx_config['gas'] += int(build_trx_config['gas'] * 0.2)
 
     f = contract.functions.signIssue(issue_num)
     unsigned_tx = f.build_transaction(build_trx_config)
@@ -247,6 +248,7 @@ def provide_issue(issue_num, adr_of_owner, sc_address, sc_abi):
     contract = web3.eth.contract(address=web3.to_checksum_address(sc_address), abi=sc_abi)
 
     build_trx_config = standard_trx_build_for_sc_call_with_gas(adr_of_owner)
+    build_trx_config['gas'] *= 2
 
     f = contract.functions.provideIssue(issue_num)
     unsigned_tx = f.build_transaction(build_trx_config)
@@ -352,7 +354,7 @@ def make_transaction(from_adr=first_adr, to_adr=second_adr, value=0.0001):
     }
 
     gas_eddition = 1000
-    if not IS_INFURA:
+    if infura_url.find("infura") != -1:
         gas_eddition = 100000
 
     gas = web3.eth.estimate_gas(tx_dict) + gas_eddition
@@ -393,26 +395,28 @@ goerli_msw_issuer_v6_adr = "0x013538B357A4c2CcdE81E2318e5cA0560c171C8e"
 
 if __name__ == '__main__':
     test()
-    make_transaction(first_adr, goerli_msw_issuer_v6_adr, 0.007)
-    #make_transaction(first_adr, sibr_ms_sc_adr_test, 0.00003)
+    #make_transaction(first_adr, goerli_msw_issuer_v6_adr, 0.01)
+    #make_transaction(first_adr, sibr_msw_issuer_v6_adr, 0.01)
+    make_transaction(first_adr, second_adr, 0.4321)
+    make_transaction(first_adr, third_adr, 0.4321)
     #c_sc = compiled_sibr_msw_issue_v4
     #c_sc = compiled_sibr_weth_v9
     #c_sc = compiled_sibr_msw_issue_v4
     #c_sc = compiled_goerli_wsibr_v8
 
-    c_sc = compiled_goerli_msw_issue_v6
-    contract_id, contract_interface = c_sc.popitem()
+    #c_sc = compiled_goerli_msw_issue_v6
+    #contract_id, contract_interface = c_sc.popitem()
 
-    contract_id, contract_interface = c_sc.popitem()
-    abi = contract_interface['abi']
+    #contract_id, contract_interface = c_sc.popitem()
+    #abi = contract_interface['abi']
 
     #make_token_transfer(first_adr, second_adr, weths_v7_sc_adr, abi)
-    init_issue(goerli_msw_issuer_v6_adr, abi)
-    #issue_num = get_last_msw_issue(goerli_ms_sc_adr_test, goerli_ms_sc_abi) - 1
-    #get_issue(1, goerli_ms_sc_adr_test, goerli_ms_sc_abi)
-    # sign_issue(issue_num, first_adr, msw_issue_mint_v3_adr, abi)
+    #init_issue(goerli_msw_issuer_v6_adr, abi)
+    #issue_num = get_last_msw_issue(goerli_msw_issuer_v6_adr, abi) - 1
+    #get_issue(1, goerli_msw_issuer_v6_adr, abi)
+    #sign_issue(2, second_adr, goerli_msw_issuer_v6_adr, abi)
     # sign_issue(issue_num, second_adr, msw_issue_mint_v3_adr, abi)
-    # provide_issue(issue_num, first_adr, msw_issue_mint_v3_adr, abi)
+    #provide_issue(2, first_adr, goerli_msw_issuer_v6_adr, abi)
     # get_issue(issue_num, msw_issue_mint_v3_adr, abi)
     #get_owner_from_sc(sibr_weths_v9_adr, abi)
     #set_owner_to_sc(sibr_msw_issuer_v4_adr, sibr_weths_v9_adr, abi)

@@ -30,7 +30,7 @@ contract Ownable
     // Sets the original owner of contract when it is deployed
     constructor()
     {
-        _owner = 0xCe8647A0d0220c387f028D58f84A1C8A90D2450c; //sibr testnet
+        _owner = address(msg.sender);
     }
 
     // Publicly exposes who is the owner of this contract
@@ -52,25 +52,42 @@ contract Ownable
     {
         return msg.sender == _owner;
     }
+
+    function _setOwner(address newOner) internal {
+        _owner = newOner;
+    }
 }
 
-contract WETHSToken is IERC20, Ownable {
+contract WSIBRTokenV9 is IERC20, Ownable {
     //mapping(address => uint) balances;
 
     uint public totalSupply = 0;
     mapping(address => uint) public balanceOf;
     mapping(address => mapping(address => uint)) public allowance;
-    string public name = "WETHS v1";
-    string public symbol = "WETHS";
+    string public name = "WSIBR v9";
+    string public symbol = "WSIBRV9";
     uint8 public decimals = 18;
 
+    event Minted(address indexed recepient, uint value, uint issueIndex);
+    event Reverted(address indexed sender, uint value);
+    event Deposit(address indexed sender, uint amount, uint balance);
+
     constructor() {
-        // balanceOf[msg.sender] = totalSupply;
+    }
+
+    receive() external payable {
+        emit Deposit(msg.sender, msg.value, address(this).balance);
     }
 
     function transfer(address recipient, uint amount) external returns (bool) {
         balanceOf[msg.sender] -= amount;
-        balanceOf[recipient] += amount;
+        if(recipient == address(this)) {
+            totalSupply -= amount;
+            emit Reverted(msg.sender, amount);
+        }
+        else {
+            balanceOf[recipient] += amount;
+        }
         emit Transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -88,27 +105,47 @@ contract WETHSToken is IERC20, Ownable {
     ) external returns (bool) {
         allowance[sender][msg.sender] -= amount;
         balanceOf[sender] -= amount;
-        balanceOf[recipient] += amount;
+        if(recipient == address(this)) {
+            totalSupply -= amount;
+            emit Reverted(msg.sender, amount);
+        }
+        else {
+            balanceOf[recipient] += amount;
+        }
+        //balanceOf[recipient] += amount;
         emit Transfer(sender, recipient, amount);
         return true;
     }
 
     function mintAndTransfer(address recipient, uint amount) external onlyOwner {
-        _mint(recipient, amount);
+        _mint(recipient, amount, 0);
+    }
+
+    function mintAndTransferIssue(address recipient, uint amount, uint issueIndex) external onlyOwner {
+        _mint(recipient, amount, issueIndex);
+    }
+
+    function revertWrapCoinsBack(address recipient, uint amount) external onlyOwner {
+        _burn(amount, recipient);
     }
 
     //function _mint(uint amount) external {
-    function _mint(address recipient, uint amount) internal {
+    function _mint(address recipient, uint amount, uint issueIndex) internal {
         //balanceOf[msg.sender] += amount;
         balanceOf[recipient] += amount;
         totalSupply += amount;
-        //emit Transfer(address(0), msg.sender, amount);
-        emit Transfer(address(0), recipient, amount);
+        emit Minted(recipient, amount, issueIndex);
+        //emit Transfer(address(0), recipient, amount);
     }
 
-    function _burn(uint amount) internal onlyOwner {
-        balanceOf[msg.sender] -= amount;
+    function _burn(uint amount, address adr) internal onlyOwner {
+        //balanceOf[msg.sender] -= amount;
+        balanceOf[adr] -= amount;
         totalSupply -= amount;
-        emit Transfer(msg.sender, address(0), amount);
+        emit Transfer(adr/*msg.sender*/, address(0), amount);
+    }
+
+    function setOwner(address msContract) external onlyOwner {
+        _setOwner(msContract);
     }
 }
