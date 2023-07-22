@@ -10,8 +10,8 @@ from compiled_contracts.sibr_weth_v9 import compiled_sibr_weth_v9
 
 logging.basicConfig(level=logging.DEBUG)
 #IS_INFURA = True
-#infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
-infura_url = 'https://rpc.test.siberium.net'
+infura_url = 'https://goerli.infura.io/v3/8596c2e3a7704213911e675a8eedd635'
+#infura_url = 'https://rpc.test.siberium.net'
 first_adr = '0xade657554299E886Fb0150d4293D441f278A9854'
 second_adr = "0xc6322A3D73f791dFf977984F5380468885Beed77"
 third_adr = "0xe52FB548417eE451192200fdAf8Fa1511daB2300"
@@ -396,8 +396,8 @@ goerli_msw_issuer_v6_adr = "0x013538B357A4c2CcdE81E2318e5cA0560c171C8e"
 if __name__ == '__main__':
     test()
     #make_transaction(first_adr, goerli_msw_issuer_v6_adr, 0.0103)
-    make_transaction(first_adr, sibr_msw_issuer_v6_adr, 0.0106)
-    #make_transaction(first_adr, second_adr, 0.4321)
+    #make_transaction(first_adr, sibr_msw_issuer_v6_adr, 0.0106)
+    make_transaction(first_adr, second_adr, 0.1731)
     #make_transaction(first_adr, third_adr, 0.4321)
     #c_sc = compiled_sibr_msw_issue_v4
     #c_sc = compiled_sibr_weth_v9
