@@ -9,10 +9,10 @@
 - Работа с компьютера - так как метамаск!
 
 ### Действующие контракты
-1.Адрес моста в сети eth = [0x013538B357A4c2CcdE81E2318e5cA0560c171C8e](https://goerli.etherscan.io/address/0x013538B357A4c2CcdE81E2318e5cA0560c171C8e)
-2.Адрес WSIBR в сети eth = [0xA72d39Ac1c5BB0abc1A044741947ACC44a23CCe5](https://goerli.etherscan.io/address/0xA72d39Ac1c5BB0abc1A044741947ACC44a23CCe5)
-3.Адрес моста в сети Siberium = [0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C](https://explorer.test.siberium.net/address/0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C)
-4.sibr_weths_sc_adr = [0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD](https://explorer.test.siberium.net/address/0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD)
+- Адрес моста в сети eth = [0x013538B357A4c2CcdE81E2318e5cA0560c171C8e](https://goerli.etherscan.io/address/0x013538B357A4c2CcdE81E2318e5cA0560c171C8e)
+- Адрес WSIBR в сети eth = [0xA72d39Ac1c5BB0abc1A044741947ACC44a23CCe5](https://goerli.etherscan.io/address/0xA72d39Ac1c5BB0abc1A044741947ACC44a23CCe5)
+- Адрес моста в сети Siberium = [0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C](https://explorer.test.siberium.net/address/0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C)
+- sibr_weths_sc_adr = [0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD](https://explorer.test.siberium.net/address/0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD)
 
 ### Суть Идеи. 
 #### Давать возможность делать minting обернутых монет только после подписи issue гардианами.
