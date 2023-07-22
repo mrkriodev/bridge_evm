@@ -1,0 +1,287 @@
+.EnumeratedPages {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.BackButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.ArrowMarginer {
+    margin-right: 4px;
+}
+
+.BottomMenu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 32px;
+    margin-bottom: 8px;
+
+    color: white;
+    font-weight: 700;
+}
+
+.PageItem {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ButtonFirstLastPage {
+    margin-left: 8px;
+    margin-right: 8px;
+    border: none;
+    cursor: pointer;
+
+    background-color: rgb(157, 53, 254);
+    color: white;
+    font-weight: 700;
+
+    padding: 8px 8px 8px 8px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.ButtonFirstLastPage:hover {
+    background-color: white;
+    color: rgb(157, 53, 254);
+}
+
+.ButtonFirstLastPage:focus {
+    background-color: black;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.MenuTitle div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.SortByElement:hover {
+    background-color: rgb(158, 205, 206);
+    transition: 0.2s;
+}
+
+.SortByElement:focus {
+    background-color: rgb(109, 155, 157);
+}
+
+.SortByElement {
+    border: none;
+    display: block;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    background-color: rgb(55, 83, 84);
+}
+
+.SortBy {
+    display: block;
+    position: relative;
+    cursor: pointer;
+
+    margin-right: 16px;
+}
+
+.MenuTitle {
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    display: block;
+    width: 160px;
+    height: 32px;
+    background: rgb(157, 53, 254);
+    text-align: center;
+    color: #ffffff;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: 0.2s;
+    position: relative;
+}
+
+.MenuTitle:before {
+    content: "";
+    display: block;
+    height: 0;
+    border-top: 5px solid rgb(157, 53, 254);
+    border-bottom: 0 solid #dddddd;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 101;
+    transition:
+      0.2s 0.2s border-top ease-out,
+      0.3s border-top-color;
+}
+
+.MenuTitle:hover {
+    background: rgb(157, 53, 254);
+    border-radius: 0px;
+    transition: 0.2s;
+}
+
+.MenuTitle:hover:before {
+    border-top-color: rgb(157, 53, 254);
+}
+
+.menu:hover > .MenuTitle:before {
+border-top-width: 0;
+transition:
+    0.2s border-top-width ease-in,
+    0.3s border-top-color;
+}
+
+.MenuTitle:after {
+    content: "";
+    display: block;
+    height: 0;
+    border-bottom: 0 solid #ebebeb;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 101;
+    transition: 0.2s border-bottom ease-in;
+}
+
+.SortBy:hover > .MenuTitle:after {
+    border-bottom-width: 5px;
+    transition: 0.2s 0.2s border-bottom-width ease-out;
+}
+
+.MenuDropDown {
+    text-align: center;
+    min-width: 100%;
+    padding: 0px 0;
+    position: absolute;
+    background: #ebebeb;
+    z-index: 100;
+    transition:
+        0.2s padding,
+        0.2s background;
+}
+  
+.MenuDropDown:after {
+    content: "";
+    display: block;
+    height: 0;
+    border-top: 5px solid #ebebeb;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 101;
+    transition: 0.2s border-top;
+}
+
+.MenuDropDown > * {
+    overflow: hidden;
+    height: 30px;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0);
+    white-space: nowrap;
+    transition: 
+      0.3s height cubic-bezier(.73,.32,.34,1.5),
+      0.2s padding cubic-bezier(.73,.32,.34,1.5),
+      0.2s margin cubic-bezier(.73,.32,.34,1.5),
+      0.2s 0.2s color,
+      0.2s background-color;
+  }
+
+.SortBy:not(:hover) > .MenuDropDown > * {
+    visibility: hidden;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    color: rgba(25,25,25,0);
+    transition: 
+      0.2s 0.1s height,
+      0.2s 0.1s padding,
+      0.2s 0.1s margin,
+      0.3s color,
+      0.1s visibility;
+    z-index: 99;
+  }
+
+.Header {
+    width: 100%;
+    height: 64px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.Menu .Header .LeftSide button {
+    height: 32px;
+    margin-left: 10px;
+
+    background-color: rgb(157, 53, 254);
+    border: none;
+    padding: 8px 8px 8px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.Menu .Header .LeftSide button:hover {
+    height: 32px;
+    margin-left: 10px;
+
+    background-color: white;
+    border: none;
+    padding: 8px 8px 8px 8px;
+    border-radius: 4px;
+    color: rgb(157, 53, 254);
+    font-weight: 700;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.Menu .Header .LeftSide button:focus {
+    height: 32px;
+    margin-left: 10px;
+
+    background-color: rgb(0, 0, 0);
+    border: none;
+    padding: 8px 8px 8px 8px;
+    border-radius: 4px;
+    color: white;
+    font-weight: 700;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.Menu {
+    width: 100%;
+    background-color: rgb(172, 84, 255);
+    border-radius: 6px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.LeftSide {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+}

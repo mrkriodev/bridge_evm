@@ -1,0 +1,36 @@
+table {
+    white-space: nowrap;
+    background-color: aliceblue;
+    box-shadow: 0 0 1px white;
+    border-radius: 6px;
+
+    width: 100%;
+    height: 100%;
+    border-spacing: 32px 12px;
+}
+
+.TableRow {
+    height: 32px;
+}
+
+thead {
+    color:rgb(160, 160, 160);
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+.Arrow {
+    color: rgb(93, 93, 93);
+}
+
+.Field {
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    height: 100%;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

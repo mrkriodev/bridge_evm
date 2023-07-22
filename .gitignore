@@ -1,3 +1,7 @@
 .idea
 venv
 *.pyc
+site/node_modules
+site/.vscode
+.vscode
+site/build
