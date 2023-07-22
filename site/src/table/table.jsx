@@ -1,57 +1,51 @@
 import { Component } from "react";
 import { FcCheckmark, FcClock } from 'react-icons/fc';
+import { BsFillArrowRightSquareFill, BsFillArrowLeftSquareFill } from "react-icons/bs";
 import { FaEthereum } from "react-icons/fa";
 import Sber from "../img/sber.png";
 
 import "./table.css";
 
 export default class Table extends Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
-            ChainID: null
+            GlobalKey: 1
         };
     }
 
-    async RefreshChainIDState() {
-        this.setState ({
-            ChainID: await window.ethereum.request({ method: 'eth_chainId' })
-        });
-    }
-
-    async componentDidMount() {
-        await this.RefreshChainIDState();
-    }
-
     render() {
+        let {GlobalKey} = this.state;
         const {Items} = this.props;
-        const {ChainID} = this.state;
         const SberLogo = <img src = {Sber} alt = "Sber logo" width = "20px" height = "20px" />;
 
         return (
             <table>
                 <thead>
-                    <tr className = "Headers">
-                        <td className = "TableHeaderName">Status</td>
-                        <td className = "TableHeaderName">Signs</td>
-                        <td className = "TableHeaderName">{ChainID === 111111 ? SberLogo : <FaEthereum/>}</td>
-                        <td className = "TableHeaderName">{ChainID === 111111 ? <FaEthereum/> : SberLogo}</td>
-                        <td className = "TableHeaderName">Address</td>
-                        <td className = "TableHeaderName">Amount</td>
+                    <tr>
+                        <td>Status</td>
+                        <td>Address</td>
+                        <td><FaEthereum/></td>
+                        <td></td>
+                        <td>{SberLogo}</td>
+                        <td>Signs</td>
+                        <td>Amount</td>
                     </tr>
                 </thead>
                 <tbody>
-                {Items && Items.map((value, key) => {
+                {Items && Items.map(value => {
                     return (
-                        <tr key = {key} className = "Items">
-                            <td key = {key}>{value["Status"] === "Pending" ? <FcCheckmark /> : <FcClock />}</td>
-                            <td key = {key}><input className = "Field" value = {value["Signs"]} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value["From"]} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value["To"]} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value["Address"]} readOnly/></td>
-                            <td key = {key}><input className = "Field" value = {value["Amount"] + " ETH"} readOnly/></td>
+                        <tr key = {GlobalKey++} className = "TableRow">
+                            <td key = {GlobalKey++}>{value.status === false ? <FcClock /> : <FcCheckmark />}</td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.address} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.hash_from} readOnly/></td>
+                            {
+                                value.direction === 1 ? <td key = {GlobalKey++} className = "Arrow"><BsFillArrowLeftSquareFill/></td> : <td key = {GlobalKey++} className = "Arrow"><BsFillArrowRightSquareFill/></td>
+                            }
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.hash_to} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.signs} readOnly/></td>
+                            <td key = {GlobalKey++}><input className = "Field" value = {value.amount + " ETH"} readOnly/></td>
                         </tr>
                     );
                 })}

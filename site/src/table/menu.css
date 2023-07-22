@@ -1,3 +1,72 @@
+.EnumeratedPages {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.BackButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.ArrowMarginer {
+    margin-right: 4px;
+}
+
+.BottomMenu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 32px;
+    margin-bottom: 8px;
+
+    color: white;
+    font-weight: 700;
+}
+
+.PageItem {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ButtonFirstLastPage {
+    margin-left: 8px;
+    margin-right: 8px;
+    border: none;
+    cursor: pointer;
+
+    background-color: rgb(157, 53, 254);
+    color: white;
+    font-weight: 700;
+
+    padding: 8px 8px 8px 8px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.ButtonFirstLastPage:hover {
+    background-color: white;
+    color: rgb(157, 53, 254);
+}
+
+.ButtonFirstLastPage:focus {
+    background-color: black;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .MenuTitle div {
     display: flex;
     align-items: center;
@@ -202,8 +271,12 @@ transition:
 
 .Menu {
     width: 100%;
-    background-color: rgb(172, 84, 255);;
+    background-color: rgb(172, 84, 255);
     border-radius: 6px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .LeftSide {
