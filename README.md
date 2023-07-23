@@ -14,6 +14,9 @@
 - Адрес моста в сети Siberium = [0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C](https://explorer.test.siberium.net/address/0x3A8C0C5C1e7CADce605f57Eee2104e5dbdC9e13C)
 - sibr_weths_sc_adr = [0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD](https://explorer.test.siberium.net/address/0xfa9CaD4Ab2BC505e805986fC27e1c6A44853E2CD)
 
+#### Eth -> deposit to адрес моста-> weth minted на адрес с которого ушел deposit.
+
+
 ### Суть Идеи. 
 #### Давать возможность делать minting обернутых монет только после подписи issue гардианами.
 По уникальному issueIndex минтинга в одной сети всегда в другой можно проверить сколько подписей у issue.
