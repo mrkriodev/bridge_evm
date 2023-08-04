@@ -1,20 +1,138 @@
-from solcx import install_solc, compile_source
-
-#install_solc(version='latest')
-solc_version = '0.8.17'
-install_solc(solc_version)
-
-compiled_goerli_wsibr_v9 = compile_source(
-    '''
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
 interface WrapCoinIface{
+
     function mintAndTransferIssue(address recipient, uint amount, uint issueIndex) external;
     function revertWrapCoinsBack(address recipient, uint amount) external;
 }
 
-contract MSIssuerV6 {
+interface IERC20 {
+    function totalSupply() external view returns (uint);
+
+    function balanceOf(address account) external view returns (uint);
+
+    function transfer(address recipient, uint amount) external returns (bool);
+
+    function allowance(address owner, address spender) external view returns (uint);
+
+    function approve(address spender, uint amount) external returns (bool);
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint amount
+    ) external returns (bool);
+
+    event Transfer(address indexed from, address indexed to, uint value);
+    event Approval(address indexed owner, address indexed spender, uint value);
+}
+
+contract RoundRobin {
+    address[] public elements;
+    uint[] public coefficients;
+    uint private currentIndex;
+    bool private hasStarted;
+    uint private threshold = 5;
+    address private owner;
+
+    event ItemChosen(address item1, address item2);
+
+    constructor(address[] memory initialElements, uint[] memory initialCoefficients) {
+        require(initialElements.length == 5, "Initial elements array should have 5 elements");
+        require(initialCoefficients.length == 5, "Initial coefficients array should have 5 elements");
+        elements = initialElements;
+        coefficients = initialCoefficients;
+        currentIndex = 0;
+        hasStarted = false;
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "RoundRobin: Only the owner can call this function");
+        _;
+    }
+
+    modifier onlyBeforeStart() {
+        require(!hasStarted, "RoundRobin: The selection process has already started");
+        _;
+    }
+
+    modifier onlyAfterStart() {
+        require(hasStarted, "RoundRobin: The selection process has not yet started");
+        _;
+    }
+
+    function startSelection() public onlyBeforeStart {
+        hasStarted = true;
+    }
+
+    function setThreshold(uint newThreshold) external onlyOwner onlyBeforeStart {
+        threshold = newThreshold;
+    }
+
+    function increaseCoefficient(uint elementIndex, uint value) external onlyOwner {
+        require(elementIndex < coefficients.length, "RoundRobin: Invalid element index");
+        coefficients[elementIndex] += value;
+    }
+
+    function chooseTwoItems() external onlyOwner returns (address, address) {
+        address item1;
+        address item2;
+        bool itemSeted = false;
+        uint prevIndex = currentIndex;
+        if(currentIndex != 0) {
+            currentIndex += 1;
+        }
+        while (!itemSeted) {
+            if (currentIndex >= elements.length) {
+                // If currentIndex exceeds the array length, wrap around to the beginning
+                currentIndex = 0;
+            }
+            item1 = elements[currentIndex];
+
+            if (coefficients[currentIndex] > threshold) {
+                itemSeted = true;
+            } else {
+                currentIndex += 1;
+            }
+
+            if (currentIndex==prevIndex && !itemSeted){
+                item1 = elements[0];
+                itemSeted = true;
+            }
+        }
+        itemSeted = false;
+        prevIndex = currentIndex;
+        currentIndex +=1;
+        while (!itemSeted) {
+            if (currentIndex >= elements.length) {
+                // If currentIndex exceeds the array length, wrap around to the beginning
+                currentIndex = 0;
+            }
+            item2 = elements[currentIndex];
+
+            if (coefficients[currentIndex] > threshold) {
+                itemSeted = true;
+            } else {
+                currentIndex += 1;
+            }
+
+            if (currentIndex==prevIndex  && !itemSeted){
+                item2 = elements[1];
+                itemSeted = true;
+            }
+        }
+
+        emit ItemChosen(item1, item2);
+        hasStarted = false;
+        return (item1, item2);
+    }
+}
+
+contract MSIssuerV9v1 {
+    RoundRobin private roundRobinContract;
+    uint private threshold = 5;
     event Deposit(address indexed sender, uint amount, uint balance);
     event SubmitTransaction(
         address indexed owner,
@@ -36,6 +154,12 @@ contract MSIssuerV6 {
     event IssueSigned(address indexed owner, uint indexed issueIndex);
     //event RevokeSign(address indexed owner, uint indexed issueIndex);
     event IssueProvided(address indexed owner, uint indexed issueIndex);
+    // Event to be emitted when the contract receives tokens
+    //event WETHTokensReceived(address indexed from, uint256 amount);
+    // Event to be emitted when the contract receives tokens
+    event WrapTokensReceived(address indexed from, uint256 amount);
+    event ChoosenGuardiansEvent(address indexed guardianOne, address indexed guardianTwo);
+    event logstr(string message, uint num);
 
     address public provider;
     address[] public guardians;
@@ -44,6 +168,7 @@ contract MSIssuerV6 {
     uint public numSignsRequired;
     uint public issueRewardPercent = 5;
     uint public signersRewardPercent = 4;
+    address public WETHTokenAddress = address(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6);
 
     struct Transaction {
         address to;
@@ -56,6 +181,7 @@ contract MSIssuerV6 {
     struct Issue {
         address to;
         uint value;
+        //int32 domain;
         uint signersReward;
         bool provided;
         uint numSigns;
@@ -130,7 +256,7 @@ contract MSIssuerV6 {
                 _numSignsRequired <= _guardians.length,
             "invalid number of required signs"
         );
-        
+
         for (uint i = 0; i < _guardians.length; i++) {
             address guardian = _guardians[i];
 
@@ -140,6 +266,13 @@ contract MSIssuerV6 {
             isGuardian[guardian] = true;
             guardians.push(guardian);
         }
+        uint[] memory defaultValues = new uint[](5);
+        defaultValues[0] = 10;
+        defaultValues[1] = 10;
+        defaultValues[2] = 1;
+        defaultValues[3] = 1;
+        defaultValues[4] = 1;
+        roundRobinContract = new RoundRobin(_guardians, defaultValues);
 
         provider = msg.sender;
         numConfirmationsRequired = _numConfirmationsRequired;
@@ -147,14 +280,30 @@ contract MSIssuerV6 {
     }
 
     receive() external payable {
+        // \todo restrict deposit to some value
+        // \tood check - is it coin ?
         emit Deposit(msg.sender, msg.value, address(this).balance);
     }
+
+    // function depositWETH(uint _amount) external {
+    //     IERC20 token = IERC20(WETHTokenAddress);
+    //     // Approve the contract to spend the sender's tokens
+    //     require(token.approve(address(this), _amount), "Token approval failed");
+    //     // Transfer the tokens from the sender to the contract
+    //     require(token.transferFrom(msg.sender, address(this), _amount), "Token transfer failed");
+    //     // Emit the event
+    //     emit WETHTokensReceived(msg.sender, _amount);
+    // }
+
+    // function depositWBTC(uint _amount) external {
+    // }
+
 
     function submitTransaction(
         address _to,
         uint _value,
         bytes memory _data
-    ) public onlyOwner {
+    ) public onlyProvider {
         uint txIndex = transactions.length;
 
         transactions.push(
@@ -169,37 +318,50 @@ contract MSIssuerV6 {
 
         emit SubmitTransaction(msg.sender, txIndex, _to, _value, _data);
     }
-    
+
     function initIssue(address _to, uint _value) public onlyProvider {
         // Generate the issueId.
         //issueId = bytes20(keccak256(_to, block.blockhash(block.number - 1)));
         uint issueIndex = issues.length;
-        
-        // Reward the validator for signing a transaction
-        //uint issueRewardAmount = (_value * issueRewardPercent) / 100;
-        uint issueRewardAmount = 1000000000000000;
-        payable(msg.sender).transfer(issueRewardAmount);
 
-        //uint m_signersRewardAmount = ((_value-issueRewardAmount) * signersRewardPercent ) / 100;
-        uint m_signersRewardAmount = 2000000000000000;
-        uint toAdrValue = (_value-issueRewardAmount-m_signersRewardAmount);
+        emit logstr("gasleft1", gasleft());
+        // Reward the validator for signing a transaction
+        uint issueRewardAmount = (_value * issueRewardPercent) / 100;
+        uint exactIssueReward = (issueRewardAmount > 100000000000000) ? issueRewardAmount : 100000000000000;
+        //uint exactIssueReward = 100000000000000;
+        payable(msg.sender).transfer(exactIssueReward);
+        emit logstr("gasleft2", gasleft());
+
+        uint shrinkvalue = (_value-exactIssueReward);
+        uint m_signerRewardAmount = (shrinkvalue * signersRewardPercent ) / 100;
+        uint exactSignersReward = (m_signerRewardAmount > 100000000000000) ? m_signerRewardAmount : 100000000000000;
+        exactSignersReward *= numSignsRequired;
+        emit logstr("gasleft3", gasleft());
+        //uint exactSignersReward = 200000000000000;
+        uint toAdrValue = (_value-exactIssueReward-exactSignersReward);
 
         issues.push(
             Issue({
                 to: _to,
                 value: toAdrValue,
-                signersReward: m_signersRewardAmount,
+                signersReward: exactSignersReward,
                 provided: false,
                 numSigns: 0
             })
         );
-
         emit IssueInited(msg.sender, issueIndex, _to, toAdrValue);
+        emit logstr("gasleft4", gasleft());
+        //roundRobinContract.startSelection();
+        // Call the chooseTwoItems function from the RoundRobin contract
+        (address guardianOne, address guardianTwo) = roundRobinContract.chooseTwoItems();
+        emit logstr("gasleft5", gasleft());
+        // Emit the BridgeEvent to indicate the chosen items from RoundRobin
+        emit ChoosenGuardiansEvent(guardianOne, guardianTwo);
     }
 
     function confirmTransaction(
         uint _txIndex
-    ) public onlyOwner txExists(_txIndex) notExecuted(_txIndex) notConfirmed(_txIndex) {
+    ) public onlyGuardian txExists(_txIndex) notExecuted(_txIndex) notConfirmed(_txIndex) {
         Transaction storage transaction = transactions[_txIndex];
         transaction.numConfirmations += 1;
         isConfirmed[_txIndex][msg.sender] = true;
@@ -218,7 +380,7 @@ contract MSIssuerV6 {
 
     function executeTransaction(
         uint _txIndex
-    ) public onlyOwner txExists(_txIndex) notExecuted(_txIndex) {
+    ) public onlyProvider txExists(_txIndex) notExecuted(_txIndex) {
         Transaction storage transaction = transactions[_txIndex];
 
         require(
@@ -248,7 +410,7 @@ contract MSIssuerV6 {
                 payable(g_adr).transfer(issue.signersReward/numSignsRequired);
                 needToPay -= 1;
             }
-        }   
+        }
 
         issue.provided = true;
         emit IssueProvided(msg.sender, _issueIndex);
@@ -259,6 +421,24 @@ contract MSIssuerV6 {
         // todo: also add signs from guardians
         WrapCoinIface WETHSTokenContract = WrapCoinIface(WrappedTokenAddress);
         WETHSTokenContract.mintAndTransferIssue(_to, _value, issueIndex);
+    }
+
+    // function to revert SIBR back in Siberium Network
+    function recvWrapCoinsBack(uint _amountTokens) external {
+        // Ensure the contract receives tokens from the sender
+        IERC20 token = IERC20(WrappedTokenAddress);
+
+        // Approve the contract to spend the sender's tokens
+        require(token.approve(address(this), _amountTokens), "Token approval failed");
+
+        // Transfer the tokens from the sender to the contract
+        require(token.transferFrom(msg.sender, address(this), _amountTokens), "Token transfer failed");
+
+        WrapCoinIface WETHSTokenContract = WrapCoinIface(WrappedTokenAddress);
+        WETHSTokenContract.revertWrapCoinsBack(msg.sender,  _amountTokens);
+
+        // Emit the event of wrap tokens receive
+        emit WrapTokensReceived(msg.sender, _amountTokens);
     }
 
     function revokeConfirmation(
@@ -329,19 +509,3 @@ contract MSIssuerV6 {
         );
     }
 }
-    ''',
-    output_values=['abi', 'bin']
-)
-
-
-# def get_compiled_sc():
-#     p = Path(__file__).parents[1]
-#     sc_path = os.path.join(os.path.abspath(p.resolve()), "contracts", "weths_v1_minting.sol")
-#     print(sc_path)
-#
-#     sc_as_text = str()
-#     with open(sc_path, 'r') as file:
-#         sc_as_text = file.read()
-#
-#     input_str = sc_as_text
-#     return input_str

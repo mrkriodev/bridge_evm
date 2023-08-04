@@ -1,6 +1,6 @@
 from solcx import install_solc, compile_source
 
-# install_solc(version='latest')
+#install_solc(version='latest')
 solc_version = '0.8.17'
 install_solc(solc_version)
 
@@ -133,15 +133,3 @@ contract WSIBRTokenV8 is IERC20, Ownable {
     output_values=['abi', 'bin']
 )
 
-
-# def get_compiled_sc():
-#     p = Path(__file__).parents[1]
-#     sc_path = os.path.join(os.path.abspath(p.resolve()), "contracts", "weths_v1_minting.sol")
-#     print(sc_path)
-#
-#     sc_as_text = str()
-#     with open(sc_path, 'r') as file:
-#         sc_as_text = file.read()
-#
-#     input_str = sc_as_text
-#     return input_str
